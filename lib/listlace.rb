@@ -16,7 +16,7 @@ module Listlace
     data = Plist::parse_xml(path_to_xml)
 
     whitelist = Track.new.attributes.keys
-    data["Tracks"].each do |_, row|
+    data["Tracks"].each do |track_id, row|
       # row already contains a hash of attributes almost ready to be passed to
       # ActiveRecord. We just need to modify the keys, e.g. change "Play Count"
       # to "play_count".
@@ -27,6 +27,7 @@ module Listlace
       end
 
       track = Track.new(attributes)
+      track.id = track_id
       track.save!
     end
 
@@ -34,10 +35,11 @@ module Listlace
       playlist = Playlist.new(name: playlist_data["Name"])
       playlist.save!
 
-      playlist_data["Playlist Items"].each.with_index do |(_, track_id), i|
+      playlist_data["Playlist Items"].map(&:values).flatten.each.with_index do |track_id, i|
         playlist_item = PlaylistItem.new(position: i)
         playlist_item.playlist = playlist
         if playlist_item.track = Track.where(id: track_id).first
+          puts "hi"
           playlist_item.save!
         end
       end
@@ -45,11 +47,6 @@ module Listlace
   end
 
   # Models
-
-  class PlaylistItem < ActiveRecord::Base
-    belongs_to :playlist
-    belongs_to :track
-  end
 
   class Track < ActiveRecord::Base
     has_many :playlist_items
@@ -59,6 +56,11 @@ module Listlace
   class Playlist < ActiveRecord::Base
     has_many :playlist_items
     has_many :tracks, through: :playlist_items, order: "playlist_items.position ASC"
+  end
+
+  class PlaylistItem < ActiveRecord::Base
+    belongs_to :playlist
+    belongs_to :track
   end
 
   def generate_schema
