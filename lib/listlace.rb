@@ -5,6 +5,10 @@ require "plist"
 module Listlace
   extend self
 
+  $afplay_pid = nil
+  $playing = false
+  $playlist = []
+
   def connect
     ActiveRecord::Base.establish_connection(
       adapter: "sqlite3",
@@ -39,10 +43,30 @@ module Listlace
         playlist_item = PlaylistItem.new(position: i)
         playlist_item.playlist = playlist
         if playlist_item.track = Track.where(id: track_id).first
-          puts "hi"
           playlist_item.save!
         end
       end
+    end
+  end
+
+  def play
+    if $playlist.empty?
+      puts "Nothing to play."
+    else
+      stop if $playing
+      track = $playlist.first
+      $playing = true
+      $afplay_pid = Process.spawn("afplay", track.path)
+      Process.detach $afplay_pid
+      puts "Now Playing: #{track.artist} - #{track.name} (0:00 / #{track.formatted_total_time})"
+    end
+  end
+
+  def stop
+    if $playing
+      Process.kill("QUIT", $afplay_pid)
+      $playing = false
+      $afplay_pid = nil
     end
   end
 
@@ -51,6 +75,30 @@ module Listlace
   class Track < ActiveRecord::Base
     has_many :playlist_items
     has_many :playlists, through: :playlist_items
+
+    def path
+      CGI::unescape(location.sub(/^file:\/\/localhost/, ""))
+    end
+
+    def formatted_total_time
+      total_seconds = total_time / 1000
+
+      seconds = total_seconds % 60
+      minutes = (total_seconds / 60) % 60
+      hours = total_seconds / 3600
+
+      if hours > 0
+        "%d:%02d:%02d" % [hours, minutes, seconds]
+      else
+        "%d:%02d" % [minutes, seconds]
+      end
+    end
+
+    def play
+      Listlace.stop
+      $playlist = [self]
+      Listlace.play
+    end
   end
 
   class Playlist < ActiveRecord::Base
