@@ -1,0 +1,43 @@
+            < listlace >
+
+listlace is a music player with a REPL.
+It allows you to forge complex playlists
+with ease... as long as you know your
+way around Ruby.
+
+No more staring a database in the face.
+No more click, shift-click, ctrl-click,
+ctrl-click, drag-and-drop, click,
+double-click.
+
+Conjuring spells is much more appropriate,
+don't you think?
+
+I'm thinking it'll go a little something
+like this. Observe:
+
+    $ listlace
+    Hello, you have 1466 songs.
+    ll> muse = album("Origin of Symmetry") + song("Blackout", artist: "Muse")
+     => Playlist (12 songs)
+    ll> maps = album("Turning The Mind") - song("Die Happy, Die Smiling")
+     => Playlist (11 songs)
+    ll> playlist = muse.shuffle + maps.shuffle
+     => Playlist (23 songs)
+    ll> playlist.play
+    Now Playing: Blackout - Muse (0:00 / 4:22)
+    ll> p
+    Paused: Blackout - Muse (0:07 / 4:22)
+    ll> seek 3..10
+    Paused: Blackout - Muse (3:10 / 4:22)
+    ll> p
+    Now Playing: Blackout - Muse (3:10 / 4:22)
+    ll> playlist.save "Maps & Muse"
+    ll> status
+    Playing playlist "Maps & Muse" (1 / 23)
+    Now Playing: Blackout - Muse (4:04 / 4:22)
+    ll> next
+    Now Playing: Space Dementia - Muse (0:00 / 6:21)
+
+And so on.
+
