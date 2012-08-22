@@ -5,6 +5,8 @@ require "plist"
 module Listlace
   extend self
 
+  PROMPT = [proc { ">> " }, proc { " | " }]
+
   $afplay_pid = nil
   $playing = false
   $playlist = []
@@ -26,12 +28,12 @@ module Listlace
       # to "play_count".
       attributes = row.inject({}) do |acc, (key, value)|
         attribute = key.gsub(" ", "").underscore
+        attribute = "original_id" if attribute == "track_id"
         acc[attribute] = value if whitelist.include? attribute
         acc
       end
 
       track = Track.new(attributes)
-      track.id = track_id
       track.save!
     end
 
@@ -42,7 +44,7 @@ module Listlace
       playlist_data["Playlist Items"].map(&:values).flatten.each.with_index do |track_id, i|
         playlist_item = PlaylistItem.new(position: i)
         playlist_item.playlist = playlist
-        if playlist_item.track = Track.where(id: track_id).first
+        if playlist_item.track = Track.where(original_id: track_id).first
           playlist_item.save!
         end
       end
@@ -114,6 +116,7 @@ module Listlace
   def generate_schema
     ActiveRecord::Schema.define do
       create_table :tracks do |t|
+        t.integer :original_id
         t.string :name
         t.string :artist
         t.string :composer
