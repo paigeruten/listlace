@@ -1,6 +1,11 @@
 #!/usr/bin/env ruby
-require "./lib/listlace"
+
+# set up bundler
+require "rubygems"
+require "bundler/setup"
 require "pry"
+
+require "./lib/listlace"
 
 Listlace.connect
 Listlace.generate_schema unless File.exists?("db/library.sqlite3")
