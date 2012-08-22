@@ -7,8 +7,8 @@ require "pry"
 
 require "./lib/listlace"
 
-Listlace.connect
-Listlace.generate_schema unless File.exists?("db/library.sqlite3")
+Listlace::Database.connect
+Listlace::Database.generate_schema unless Listlace::Database.exists?
 
 puts "Hello, you have #{Listlace::Track.count} songs."
 
