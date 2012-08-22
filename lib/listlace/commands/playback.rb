@@ -1,5 +1,5 @@
 module Listlace
-  $afplay_pid = nil
+  $player = nil
   $playing = false
   $playlist = []
 
@@ -10,17 +10,16 @@ module Listlace
       stop if $playing
       track = $playlist.first
       $playing = true
-      $afplay_pid = Process.spawn("afplay", track.path)
-      Process.detach $afplay_pid
+      $player = MPlayer::Slave.new track.path
       puts "Now Playing: #{track.artist} - #{track.name} (0:00 / #{track.formatted_total_time})"
     end
   end
 
   def stop
     if $playing
-      Process.kill("QUIT", $afplay_pid)
+      $player.quit if $player
+      $player = nil
       $playing = false
-      $afplay_pid = nil
     end
   end
 end
