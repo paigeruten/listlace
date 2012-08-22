@@ -3,6 +3,8 @@
 # set up bundler
 require "rubygems"
 require "bundler/setup"
+
+# pry is our repl
 require "pry"
 
 require "./lib/listlace"

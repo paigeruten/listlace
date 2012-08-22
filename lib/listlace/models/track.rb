@@ -22,8 +22,7 @@ module Listlace
     end
 
     def play
-      Listlace.stop
-      $playlist = [self]
+      $player.queue = [self]
       Listlace.play
     end
   end
