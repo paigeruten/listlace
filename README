@@ -13,31 +13,35 @@ double-click.
 Conjuring audio with spells is much more
 appropriate, don't you think?
 
-I'm thinking it'll go a little something
-like this. Observe:
+-- install
 
-    $ listlace
-    Hello, you have 1466 songs.
-    ll> muse = album("Origin of Symmetry") + song("Blackout", artist: "Muse")
-     => Playlist (12 songs)
-    ll> maps = album("Turning The Mind") - song("Die Happy, Die Smiling")
-     => Playlist (11 songs)
-    ll> playlist = muse.shuffle + maps.shuffle
-     => Playlist (23 songs)
-    ll> playlist.play
-    Now Playing: Blackout - Muse (0:00 / 4:22)
-    ll> p
-    Paused: Blackout - Muse (0:07 / 4:22)
-    ll> seek 3..10
-    Paused: Blackout - Muse (3:10 / 4:22)
-    ll> p
-    Now Playing: Blackout - Muse (3:10 / 4:22)
-    ll> playlist.save "Maps & Muse"
-    ll> status
-    Playing playlist "Maps & Muse" (1 / 23)
-    Now Playing: Blackout - Muse (4:04 / 4:22)
-    ll> next
-    Now Playing: Space Dementia - Muse (0:00 / 6:21)
+It's a gem. So do this:
 
-And so on.
+  gem install listlace
 
+But you also need mplayer. It has to be
+at /usr/bin/mplayer, for now.
+
+-- usage
+
+The gem gives you an executable called
+'listlace'. So do this:
+
+  $ listlace
+
+It will make a '.listlace' directory in
+$HOME, where the database of tracks and
+playlists is stored. Then it will give you
+a prompt. Don't be alarmed, it speaks
+Ruby.
+
+The only way to populate the database right
+now is to import your iTunes library.
+That goes a little something like this:
+
+  >> import_from_itunes "/Users/jeremy/Music/iTunes/iTunes Music Library.xml"
+
+Once you've done that, you can play with the
+Track and Playlist models, do some queries.
+You can't actually play the music, because
+that part's broken, sorry. Not for long.
