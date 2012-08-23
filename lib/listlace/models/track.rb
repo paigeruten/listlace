@@ -3,10 +3,6 @@ module Listlace
     has_many :playlist_items
     has_many :playlists, through: :playlist_items
 
-    def path
-      CGI::unescape(location.sub(/^file:\/\/localhost/, ""))
-    end
-
     def formatted_total_time
       total_seconds = total_time / 1000
 

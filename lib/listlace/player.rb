@@ -38,7 +38,7 @@ module Listlace
 
     def _play(track)
       @mplayer.quit if _mplayer_alive?
-      @mplayer = MPlayer::Slave.new track.path
+      @mplayer = MPlayer::Slave.new track.location
 
       Thread.new do
         Process.wait(@mplayer.pid)

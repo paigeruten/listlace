@@ -1,3 +1,4 @@
 db/*.sqlite3
 listlace.sublime-project
 listlace.sublime-workspace
+listlace-*.gem

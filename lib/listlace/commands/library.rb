@@ -17,6 +17,11 @@ module Listlace
         acc
       end
 
+      # change iTunes' URL-style locations into simple paths
+      if attributes["location"] && attributes["location"] =~ /^file:\/\//
+        attributes["location"] = CGI::unescape(attributes["location"].sub(/^file:\/\/localhost/, ""))
+      end
+
       track = Track.new(attributes)
       track.save!
     end

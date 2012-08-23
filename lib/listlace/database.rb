@@ -3,7 +3,7 @@ module Listlace
     extend self
 
     ADAPTER = "sqlite3"
-    PATH = "db/library.sqlite3"
+    PATH = "#{Listlace::DIR}/library.sqlite3"
 
     def connect
       ActiveRecord::Base.establish_connection(adapter: ADAPTER, database: PATH)

@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 
-# set up bundler
-require "rubygems"
 require "bundler/setup"
-
-# pry is our repl
 require "pry"
+require "fileutils"
+require "listlace"
 
-require "./lib/listlace"
+unless File.exists? Listlace::DIR
+  FileUtils.mkdir_p Listlace::DIR
+end
 
 Listlace::Database.connect
 Listlace::Database.generate_schema unless Listlace::Database.exists?
