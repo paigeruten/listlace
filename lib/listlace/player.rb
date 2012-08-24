@@ -108,12 +108,21 @@ module Listlace
       end
     end
 
+    def speed
+      answer = @mplayer.command("get_property speed", expect_answer: true)
+      if answer =~ /^ANS_speed=([0-9.]+)$/
+        $1.to_f.to_i
+      end
+    end
+
+    def set_speed(speed)
+      @mplayer.command("speed_set %d" % [speed], expect_answer: true)
+    end
+
     def current_time
       answer = @mplayer.command "get_time_pos", expect_answer: true
       if answer =~ /^ANS_TIME_POSITION=([0-9.]+)$/
         ($1.to_f * 1000).to_i
-      else
-        0
       end
     end
 

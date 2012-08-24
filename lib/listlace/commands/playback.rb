@@ -8,8 +8,13 @@ module Listlace
         $player.resume
         status :playing
       elsif $player.started?
-        $player.pause
-        status :playing
+        if $player.speed == 1
+          $player.pause
+          status :playing
+        else
+          $player.set_speed 1
+          puts "Back to normal."
+        end
       else
         if $player.empty?
           puts "Nothing to play."
@@ -70,10 +75,9 @@ module Listlace
     status :playing
   end
 
-  def ff
-  end
-
-  def rew
+  def ff(speed = 2)
+    $player.set_speed(speed)
+    puts "Fast-forwarding. (x#{speed})"
   end
 
   def repeat(one_or_all = :all)
