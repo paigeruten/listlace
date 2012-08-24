@@ -5,11 +5,13 @@ module Listlace
   PROMPT = [proc { ">> " }, proc { " | " }]
 end
 
-require "mplayer-ruby"
+require "open4"
+require "shellwords"
 require "active_record"
 
 require "listlace/database"
 require "listlace/player"
+require "listlace/mplayer"
 
 require "listlace/models/track"
 require "listlace/models/playlist"

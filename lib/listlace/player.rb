@@ -1,60 +1,119 @@
 module Listlace
+  # This is the music box. It contains a queue, which is an array of tracks. It
+  # then plays these tracks sequentially. The buttons for play, pause, next,
+  # previous, etc. are all located here.
   class Player
-    attr_accessor :mplayer, :queue, :current_track
+    attr_accessor :current_track
 
     def initialize
       @mplayer = nil
       @queue = []
       @current_track = nil
       @current_track_index = nil
+      @paused = false
+      @started = false
+    end
+
+    def queue(track = nil)
+      @queue << track if track.is_a? Track
+      @queue.dup
+    end
+
+    def clear
+      stop
+      @queue = []
+    end
+
+    def empty?
+      @queue.empty?
+    end
+
+    def paused?
+      @paused
+    end
+
+    def started?
+      @started
     end
 
     def start
-      unless @queue.empty?
+      unless empty?
+        @started = true
         @current_track = @queue.first
         @current_track_index = 0
-        _play @current_track
-      end
-    end
-
-    def next
-      @current_track_index += 1
-      @current_track = @queue[@current_track_index]
-      if @current_track
-        _play @current_track
-      else
-        stop
+        load_track(@current_track)
       end
     end
 
     def stop
-      @mplayer.quit if _mplayer_alive?
+      @mplayer.quit if @mplayer
       @mplayer = nil
       @current_track = nil
       @current_track_index = nil
+      @paused = false
+      @started = false
+    end
+
+    def pause
+      if not paused?
+        @paused = true
+        @mplayer.command "pause"
+      end
+    end
+
+    def resume
+      if paused?
+        @paused = false
+        if @mplayer && @mplayer.alive?
+          @mplayer.command "pause"
+        else
+          load_track @current_track
+        end
+      end
+    end
+
+    def restart
+      change_track(0)
+    end
+
+    def back
+      change_track(-1)
+    end
+
+    def skip
+      change_track(1)
+    end
+
+    def current_time
+      0
+    end
+
+    def formatted_current_time
+      "0:00"
     end
 
     private
 
-    def _play(track)
-      @mplayer.quit if _mplayer_alive?
-      @mplayer = MPlayer::Slave.new track.location
-
-      Thread.new do
-        Process.wait(@mplayer.pid)
-        $player.next
+    def change_track(by = 1)
+      @current_track_index += by
+      @current_track = @queue[@current_track_index]
+      if @current_track && @current_track_index >= 0
+        if paused?
+          @mplayer.quit if @mplayer
+        else
+          load_track(@current_track)
+        end
+        true
+      else
+        stop
+        false
       end
     end
 
-    def _mplayer_alive?
-      if @mplayer
-        begin
-          Process.getpgid(@mplayer.pid)
-          true
-        rescue Errno::ESRCH
-          false
-        end
-      end
+    def load_track(track)
+      @mplayer.quit if @mplayer
+      @mplayer = MPlayer.new(track) { send :change_track }
+      @paused = false
     end
   end
 end

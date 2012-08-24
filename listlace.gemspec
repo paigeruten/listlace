@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.files += ["bin/listlace"]
   s.files += Dir["lib/**/*.rb"]
 
-  %w(pry plist sqlite3 activerecord activesupport mplayer-ruby).each do |gem_name|
+  %w(pry plist sqlite3 activerecord activesupport open4).each do |gem_name|
     s.add_runtime_dependency gem_name
   end
 

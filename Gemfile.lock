@@ -1,17 +1,10 @@
-GIT
-  remote: git://github.com/yjerem/mplayer-ruby.git
-  revision: ffa7213d1c0340fa79aa794929affba65d4cff28
-  specs:
-    mplayer-ruby (0.1.0)
-      open4 (>= 1.0.1)
-
 PATH
   remote: .
   specs:
     listlace (0.0.1)
       activerecord
       activesupport
-      mplayer-ruby
+      open4
       plist
       pry
       sqlite3
@@ -52,5 +45,4 @@ PLATFORMS
 
 DEPENDENCIES
   listlace!
-  mplayer-ruby!
   rake
