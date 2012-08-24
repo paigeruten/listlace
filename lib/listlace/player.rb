@@ -131,6 +131,23 @@ module Listlace
       @mplayer.command("speed_set %f" % [speed], expect_answer: true)
     end
 
+    def shuffle
+      if started?
+        @queue = [@current_track] + (@queue - [@current_track]).shuffle
+        @current_track_index = 0
+      else
+        @queue.shuffle!
+      end
+    end
+
+    def sort(&by)
+      @queue.sort! &by
+
+      if started?
+        @current_track_index = @queue.index(@current_track)
+      end
+    end
+
     def current_time
       answer = @mplayer.command "get_time_pos", expect_answer: true
       if answer =~ /^ANS_TIME_POSITION=([0-9.]+)$/

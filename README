@@ -75,3 +75,5 @@ itself will start playing the queue.
 * queue
   - q: append some tracks to the queue, or get the queue
   - clear: clear the queue
+  - shuffle: shuffle the songs in the queue
+  - sort: sort the songs in the queue however you want
