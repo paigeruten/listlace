@@ -58,30 +58,29 @@ module Listlace
     end
   end
 
-  # The queue command. Simply appends tracks to the queue. Tracks can be
-  # specified by a single Track, a Playlist, an ActiveRecord::Relation, or an
-  # Array containing any of the above. With or without arguments, it returns the
-  # queue as an Array of Tracks, so this can be used as an accessor method.
-  def q(*tracks)
-    tracks.each do |playlist_or_track|
-      case playlist_or_track
-      when Track
-        $player.queue playlist_or_track
-      when Playlist
-        q *playlist_or_track.tracks
-      when Array
-        q *playlist_or_track
-      when ActiveRecord::Relation
-        q *playlist_or_track.all
-      end
-    end
-    $player.queue
+  # Seek to a particular position in the current track. If given an integer, it
+  # will seek that many seconds forward or backward. If given a Range, it will
+  # seek to that specific time, the first number in the Range representing the
+  # minutes, the second number representing the seconds. You can also pass a
+  # String like "1:23:45" to do the same thing. To seek to an absolute time in
+  # seconds, do it like "seek(abs: 40)". To seek to a percentage, do something
+  # like "seek(percent: 75)".
+  def seek(where)
+    $player.seek(where)
+    status :playing
   end
 
-  # Clears the queue.
-  def clear
-    $player.clear
-    puts "Queue cleared."
+  def ff
+  end
+
+  def rew
+  end
+
+  def repeat(one_or_all = :all)
+
+  end
+
+  def norepeat
   end
 
   def status(type = [:playlist, :playing])

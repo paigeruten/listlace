@@ -84,6 +84,30 @@ module Listlace
       change_track(1)
     end
 
+    def seek(where)
+      case where
+      when Integer
+        @mplayer.command("seek %d 0" % [where], expect_answer: true)
+      when Range
+        @mplayer.command("seek %d 2" % [where.begin * 60 + where.end], expect_answer: true)
+      when String
+        parts = where.split(":").map(&:to_i)
+        parts = [0] + parts if parts.length == 2
+        hours, minutes, seconds = parts
+        @mplayer.command("seek %d 2" % [hours * 3600 + minutes * 60 + seconds], expect_answer: true)
+      when Hash
+        if where[:abs]
+          if where[:abs].is_a? Integer
+            @mplayer.command("seek %d 2" % [where[:abs]], expect_answer: true)
+          else
+            seek(where[:abs])
+          end
+        elsif where[:percent]
+          @mplayer.command("seek %d 1" % [where[:percent]], expect_answer: true)
+        end
+      end
+    end
+
     def current_time
       answer = @mplayer.command "get_time_pos", expect_answer: true
       if answer =~ /^ANS_TIME_POSITION=([0-9.]+)$/

@@ -21,6 +21,7 @@ require "listlace/commands/library"
 require "listlace/commands/playback"
 require "listlace/commands/selectors"
 require "listlace/commands/volume"
+require "listlace/commands/queue"
 
 # gotta ged rid of this global sometime
 $player = Listlace::Player.new
