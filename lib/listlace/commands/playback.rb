@@ -87,7 +87,7 @@ module Listlace
   def status(type = [:playlist, :playing])
     case type
     when Array
-      type.each { |t| status :t }
+      type.each { |t| status t }
     when :playlist
       #nop
     when :playing

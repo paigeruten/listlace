@@ -41,7 +41,33 @@ That goes a little something like this:
 
   >> import_from_itunes "/Users/jeremy/Music/iTunes/iTunes Music Library.xml"
 
-Once you've done that, you can play with the
-Track and Playlist models, do some queries.
-You can't actually play the music, because
-that part's broken, sorry. Not for long.
+Now you can play your music.
+
+-- p's and q's
+
+p is the most important command. It's the
+play command. It's also the pause/resume
+command. You can pass it some tracks or a
+playlist, and it will queue up the music
+and start playing it, sequentially. If you
+don't pass it anything, that's when it acts
+as a pause/resume button.
+
+q is the queue command. You can pass it some
+tracks or a playlist and it'll add them to the
+queue. The queue is just an array of tracks
+to be played in order. The p command by
+itself will start playing the queue.
+
+-- commands
+
+* playback
+  - p: play/pause/resume
+  - stop: stop playback
+  - restart: seek back to the beginning of the current track
+  - back: go back a song
+  - skip: go to the next song
+  - status: show what's currently playing, as well as other information
+* queueing
+  - q: append some tracks to the queue, or get the queue
+  - clear: clear the queue
