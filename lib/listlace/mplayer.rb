@@ -7,14 +7,20 @@ module Listlace
       cmd = "/usr/bin/mplayer -slave -quiet #{Shellwords.shellescape(track.location)}"
       @pid, @stdin, @stdout, @stderr = Open4.popen4(cmd)
 
+      until @stdout.gets[/playback/]
+      end
+
       @quit_hook = Thread.new do
         Process.wait(@pid)
         on_quit.call
       end
     end
 
-    def command(cmd)
+    def command(cmd, options = {})
       @stdin.puts cmd
+      if options[:expect_answer]
+        @stdout.gets
+      end
     end
 
     def quit

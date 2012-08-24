@@ -85,11 +85,16 @@ module Listlace
     end
 
     def current_time
-      0
+      answer = @mplayer.command "get_time_pos", expect_answer: true
+      if answer =~ /^ANS_TIME_POSITION=([0-9.]+)$/
+        ($1.to_f * 1000).to_i
+      else
+        0
+      end
     end
 
     def formatted_current_time
-      "0:00"
+      Track.format_time(current_time)
     end
 
     private

@@ -4,7 +4,16 @@ module Listlace
     has_many :playlists, through: :playlist_items
 
     def formatted_total_time
-      total_seconds = total_time / 1000
+      Track.format_time(total_time)
+    end
+
+    def play
+      $player.queue = [self]
+      Listlace.play
+    end
+
+    def self.format_time(milliseconds)
+      total_seconds = milliseconds / 1000
 
       seconds = total_seconds % 60
       minutes = (total_seconds / 60) % 60
@@ -15,11 +24,6 @@ module Listlace
       else
         "%d:%02d" % [minutes, seconds]
       end
-    end
-
-    def play
-      $player.queue = [self]
-      Listlace.play
     end
   end
 end
