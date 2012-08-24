@@ -17,7 +17,7 @@ appropriate, don't you think?
 
 It's a gem. So do this:
 
-  gem install listlace
+  $ gem install listlace
 
 But you also need mplayer. It has to be
 at /usr/bin/mplayer, for now.
@@ -67,7 +67,9 @@ itself will start playing the queue.
   - restart: seek back to the beginning of the current track
   - back: go back a song
   - skip: go to the next song
+  - seek: move to a different part of the track
+  - ff: fast-forward
   - status: show what's currently playing, as well as other information
-* queueing
+* queue
   - q: append some tracks to the queue, or get the queue
   - clear: clear the queue
