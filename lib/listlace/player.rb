@@ -3,7 +3,7 @@ module Listlace
   # then plays these tracks sequentially. The buttons for play, pause, next,
   # previous, etc. are all located here.
   class Player
-    attr_accessor :current_track
+    attr_reader :current_track, :current_track_index, :repeat_mode
 
     def initialize
       @mplayer = nil
@@ -12,6 +12,7 @@ module Listlace
       @current_track_index = nil
       @paused = false
       @started = false
+      @repeat_mode = false
     end
 
     def queue(track = nil)
@@ -72,6 +73,17 @@ module Listlace
       end
     end
 
+    def repeat(one_or_all_or_off)
+      case one_or_all_or_off
+      when :one
+        @repeat_mode = :one
+      when :all
+        @repeat_mode = :all
+      when :off
+        @repeat_mode = false
+      end
+    end
+
     def restart
       change_track(0)
     end
@@ -111,12 +123,12 @@ module Listlace
     def speed
       answer = @mplayer.command("get_property speed", expect_answer: true)
       if answer =~ /^ANS_speed=([0-9.]+)$/
-        $1.to_f.to_i
+        $1.to_f
       end
     end
 
     def set_speed(speed)
-      @mplayer.command("speed_set %d" % [speed], expect_answer: true)
+      @mplayer.command("speed_set %f" % [speed], expect_answer: true)
     end
 
     def current_time
@@ -132,8 +144,18 @@ module Listlace
 
     private
 
-    def change_track(by = 1)
+    def change_track(by = 1, options = {})
       @current_track_index += by
+      if options[:auto] && @repeat_mode
+        case @repeat_mode
+        when :one
+          @current_track_index -= by
+        when :all
+          if @current_track_index >= @queue.length
+            @current_track_index = 0
+          end
+        end
+      end
       @current_track = @queue[@current_track_index]
       if @current_track && @current_track_index >= 0
         if paused?
@@ -150,7 +172,7 @@ module Listlace
 
     def load_track(track)
       @mplayer.quit if @mplayer
-      @mplayer = MPlayer.new(track) { send :change_track }
+      @mplayer = MPlayer.new(track) { send(:change_track, 1, auto: true) }
       @paused = false
     end
   end

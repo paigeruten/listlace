@@ -1,4 +1,7 @@
 module Listlace
+  REPEAT_SYMBOL = "\u221E"
+  TIMES_SYMBOL = "\u00D7"
+
   # The play command. With no arguments, it either resumes playback or starts
   # playing the queue. With arguments, it replaces the queue with the given
   # tracks and starts playing.
@@ -6,27 +9,26 @@ module Listlace
     if tracks.empty?
       if $player.paused?
         $player.resume
-        status :playing
+        status
       elsif $player.started?
         if $player.speed == 1
           $player.pause
-          status :playing
+          status
         else
           $player.set_speed 1
-          puts "Back to normal."
+          status
         end
       else
         if $player.empty?
           puts "Nothing to play."
         else
           $player.start
-          track = $player.current_track
-          status :playing
+          status
         end
       end
     else
-      stop
-      clear
+      $player.stop
+      $player.clear
       q *tracks
       p
     end
@@ -42,13 +44,13 @@ module Listlace
   # Start the current track from the beginning.
   def restart
     $player.restart
-    status :playing
+    status
   end
 
   # Go back one song in the queue.
   def back
     if $player.back
-      status :playing
+      status
     else
       puts "End of queue."
     end
@@ -57,7 +59,7 @@ module Listlace
   # Go directly to the next song in the queue.
   def skip
     if $player.skip
-      status :playing
+      status
     else
       puts "End of queue."
     end
@@ -72,37 +74,62 @@ module Listlace
   # like "seek(percent: 75)".
   def seek(where)
     $player.seek(where)
-    status :playing
+    status
   end
 
+  # Fast-forward at a particular speed. Induces the chipmunk effect, which I
+  # find agreeable. Call p to go back to normal. You can also pass a value
+  # smaller than one to slow down.
   def ff(speed = 2)
     $player.set_speed(speed)
-    puts "Fast-forwarding. (x#{speed})"
+    status
   end
 
+  # Pass :all to start playing from the top of the queue when it gets to the
+  # end. Pass :one to repeat the current track.
   def repeat(one_or_all = :all)
-
+    $player.repeat one_or_all
+    status
   end
 
+  # Turn off the repeat mode set by the repeat command.
   def norepeat
+    $player.repeat :off
+    status
   end
 
-  def status(type = [:playlist, :playing])
-    case type
-    when Array
-      type.each { |t| status t }
-    when :playlist
-      #nop
-    when :playing
-      if $player.started?
-        s = $player.paused? ? "Paused" : "Now Playing"
-        name = $player.current_track.name
-        artist = $player.current_track.artist
-        time = $player.formatted_current_time
-        total_time = $player.current_track.formatted_total_time
-        puts "%s: %s - %s (%s / %s)" % [s, name, artist, time, total_time]
-      else
-        puts "Stopped."
+  # Show various information about the status of the player. The information it
+  # shows depends on what status types you pass:
+  #
+  #   :playlist - Shows the playlist that is currently playing
+  #   :playing - Shows the current track
+  #
+  def status(*types)
+    types = [:playlist, :playing] if types.empty?
+    types.each do |type|
+      case type
+      when :playlist
+        if $player.started?
+        track_number = $player.current_track_index + 1
+          num_tracks = q.length
+          repeat_one = $player.repeat_mode == :one ? REPEAT_SYMBOL : ""
+          repeat_all = $player.repeat_mode == :all ? REPEAT_SYMBOL : ""
+          puts "Playlist: queue (%d%s / %d%s)" % [track_number, repeat_one, num_tracks, repeat_all]
+        else
+          puts "Playlist: queue (%d songs)" % [q.length]
+        end
+      when :playing
+        if $player.started?
+          name = $player.current_track.name
+          artist = $player.current_track.artist
+          time = $player.formatted_current_time
+          total_time = $player.current_track.formatted_total_time
+          paused = $player.paused? ? "|| " : ""
+          speed = $player.speed != 1 ? "#{TIMES_SYMBOL}#{$player.speed} " : ""
+          puts "%s - %s (%s / %s) %s%s" % [name, artist, time, total_time, paused, speed]
+        else
+          puts "Stopped."
+        end
       end
     end
   end

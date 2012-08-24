@@ -68,7 +68,9 @@ itself will start playing the queue.
   - back: go back a song
   - skip: go to the next song
   - seek: move to a different part of the track
-  - ff: fast-forward
+  - ff: fast-forward, or slow down
+  - repeat: choose the repeat mode, either :one or :all
+  - norepeat: turn off the repeat mode
   - status: show what's currently playing, as well as other information
 * queue
   - q: append some tracks to the queue, or get the queue
