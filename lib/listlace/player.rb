@@ -88,12 +88,12 @@ module Listlace
       change_track(0)
     end
 
-    def back
-      change_track(-1)
+    def back(n = 1)
+      change_track(-n)
     end
 
-    def skip
-      change_track(1)
+    def skip(n = 1)
+      change_track(n)
     end
 
     def seek(where)

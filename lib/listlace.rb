@@ -8,6 +8,7 @@ end
 require "open4"
 require "shellwords"
 require "active_record"
+require "fileutils"
 
 require "listlace/database"
 require "listlace/player"

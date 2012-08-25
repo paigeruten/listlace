@@ -13,6 +13,16 @@ module Listlace
       File.exists? PATH
     end
 
+    def delete
+      FileUtils.rm PATH
+    end
+
+    def wipe
+      delete
+      connect
+      generate_schema
+    end
+
     def generate_schema
       ActiveRecord::Schema.define do
         create_table :tracks do |t|

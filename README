@@ -39,7 +39,7 @@ The only way to populate the database right
 now is to import your iTunes library.
 That goes a little something like this:
 
-  >> import_from_itunes "/Users/jeremy/Music/iTunes/iTunes Music Library.xml"
+  >> import :itunes, "/Users/jeremy/Music/iTunes/iTunes Music Library.xml"
 
 Now you can play your music.
 
@@ -77,3 +77,6 @@ itself will start playing the queue.
   - clear: clear the queue
   - shuffle: shuffle the songs in the queue
   - sort: sort the songs in the queue however you want
+* library
+  - import: import another program's music library
+  - wipe_library: remove all tracks and playlists from the library

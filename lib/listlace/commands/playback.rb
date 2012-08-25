@@ -48,8 +48,8 @@ module Listlace
   end
 
   # Go back one song in the queue.
-  def back
-    if $player.back
+  def back(n = 1)
+    if $player.back(n)
       status
     else
       puts "End of queue."
@@ -57,8 +57,8 @@ module Listlace
   end
 
   # Go directly to the next song in the queue.
-  def skip
-    if $player.skip
+  def skip(n = 1)
+    if $player.skip(n)
       status
     else
       puts "End of queue."
