@@ -47,5 +47,6 @@ module Listlace
         result
       end
     end
+    puts "Sorted."
   end
 end

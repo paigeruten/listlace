@@ -13,4 +13,8 @@ Listlace::Database.generate_schema unless Listlace::Database.exists?
 
 puts "Hello, you have #{Listlace::Track.count} songs."
 
-Listlace.pry quiet: true, prompt: Listlace::PROMPT
+Listlace.pry(
+  quiet: true,
+  prompt: Listlace::PROMPT,
+  print: Listlace::PRINT
+)

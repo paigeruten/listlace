@@ -3,6 +3,11 @@ module Listlace
 
   DIR = ENV["LISTLACE_DIR"] || (ENV["HOME"] + "/.listlace")
   PROMPT = [proc { ">> " }, proc { " | " }]
+  PRINT = proc do |output, value|
+    unless value.nil?
+      Pry::DEFAULT_PRINT.call(output, value)
+    end
+  end
 end
 
 require "open4"
