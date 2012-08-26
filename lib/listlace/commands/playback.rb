@@ -114,9 +114,9 @@ module Listlace
           num_tracks = q.length
           repeat_one = $player.repeat_mode == :one ? REPEAT_SYMBOL : ""
           repeat_all = $player.repeat_mode == :all ? REPEAT_SYMBOL : ""
-          puts "Playlist: queue (%d%s / %d%s)" % [track_number, repeat_one, num_tracks, repeat_all]
+          puts "Playlist: %s (%d%s / %d%s)" % [q.name, track_number, repeat_one, num_tracks, repeat_all]
         else
-          puts "Playlist: queue (%d songs)" % [q.length]
+          puts "Playlist: %s" % [q]
         end
       when :playing
         if $player.started?

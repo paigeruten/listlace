@@ -13,6 +13,7 @@ require "fileutils"
 require "listlace/database"
 require "listlace/player"
 require "listlace/mplayer"
+require "listlace/playlist_array"
 
 require "listlace/models/track"
 require "listlace/models/playlist"
@@ -24,7 +25,6 @@ require "listlace/commands/selectors"
 require "listlace/commands/volume"
 require "listlace/commands/queue"
 
-# gotta ged rid of this global sometime
 $player = Listlace::Player.new
 
 at_exit do

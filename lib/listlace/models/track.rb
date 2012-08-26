@@ -7,11 +7,6 @@ module Listlace
       Track.format_time(total_time)
     end
 
-    def play
-      $player.queue = [self]
-      Listlace.play
-    end
-
     def self.format_time(milliseconds)
       total_seconds = milliseconds / 1000
 
@@ -24,6 +19,14 @@ module Listlace
       else
         "%d:%02d" % [minutes, seconds]
       end
+    end
+
+    def self.parse_time(string)
+      parts = string.split(":").map(&:to_i)
+      parts = [0] + parts if parts.length == 2
+      hours, minutes, seconds = parts
+      seconds = hours * 3600 + minutes * 60 + seconds
+      seconds * 1000
     end
   end
 end

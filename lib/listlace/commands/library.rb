@@ -38,8 +38,12 @@ module Listlace
 
         track = Track.new(attributes)
 
-        if track.save
-          num_tracks += 1
+        if track.kind =~ /audio/
+          if track.save
+            num_tracks += 1
+          end
+        else
+          puts "[skipping non-audio file]"
         end
       end
       puts "Imported #{num_tracks} tracks successfully."
@@ -49,15 +53,19 @@ module Listlace
       data["Playlists"].each do |playlist_data|
         playlist = Playlist.new(name: playlist_data["Name"])
 
-        if playlist.save
-          playlist_data["Playlist Items"].map(&:values).flatten.each.with_index do |track_id, i|
-            playlist_item = PlaylistItem.new(position: i)
-            playlist_item.playlist = playlist
-            if playlist_item.track = Track.where(original_id: track_id).first
-              playlist_item.save!
+        if ["Library", "Music", "Movies", "TV Shows", "iTunes DJ"].include? playlist.name
+          puts "[skipping \"#{playlist.name}\" playlist]"
+        else
+          if playlist.save
+            playlist_data["Playlist Items"].map(&:values).flatten.each.with_index do |track_id, i|
+              playlist_item = PlaylistItem.new(position: i)
+              playlist_item.playlist = playlist
+              if playlist_item.track = Track.where(original_id: track_id).first
+                playlist_item.save!
+              end
             end
+            num_playlists += 1
           end
-          num_playlists += 1
         end
       end
       puts "Imported #{num_playlists} playlists successfully."

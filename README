@@ -80,3 +80,7 @@ itself will start playing the queue.
 * library
   - import: import another program's music library
   - wipe_library: remove all tracks and playlists from the library
+
+-- selectors
+
+...

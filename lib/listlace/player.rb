@@ -7,7 +7,7 @@ module Listlace
 
     def initialize
       @mplayer = nil
-      @queue = []
+      @queue = PlaylistArray.new([], :queue)
       @current_track = nil
       @current_track_index = nil
       @paused = false
@@ -15,14 +15,14 @@ module Listlace
       @repeat_mode = false
     end
 
-    def queue(track = nil)
-      @queue << track if track.is_a? Track
+    def queue(playlist = nil)
+      @queue << playlist if playlist
       @queue.dup
     end
 
     def clear
       stop
-      @queue = []
+      @queue.clear
     end
 
     def empty?
@@ -103,10 +103,7 @@ module Listlace
       when Range
         @mplayer.command("seek %d 2" % [where.begin * 60 + where.end], expect_answer: true)
       when String
-        parts = where.split(":").map(&:to_i)
-        parts = [0] + parts if parts.length == 2
-        hours, minutes, seconds = parts
-        @mplayer.command("seek %d 2" % [hours * 3600 + minutes * 60 + seconds], expect_answer: true)
+        @mplayer.command("seek %d 2" % [Track.parse_time(where) / 1000], expect_answer: true)
       when Hash
         if where[:abs]
           if where[:abs].is_a? Integer
@@ -133,7 +130,7 @@ module Listlace
 
     def shuffle
       if started?
-        @queue = [@current_track] + (@queue - [@current_track]).shuffle
+        @queue.shuffle_except! @current_track
         @current_track_index = 0
       else
         @queue.shuffle!
