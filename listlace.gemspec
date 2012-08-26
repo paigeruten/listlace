@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "listlace"
-  s.version = "0.0.4"
-  s.date = "2012-08-25"
+  s.version = "0.0.5"
+  s.date = "2012-08-26"
   s.summary = "A music player in a REPL."
   s.description = "Listlace is a music player which is interacted with through a Ruby REPL."
   s.author = "Jeremy Ruten"
