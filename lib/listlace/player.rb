@@ -93,6 +93,8 @@ module Listlace
     end
 
     def skip(n = 1)
+      @current_track.increment! :skip_count
+      @current_track.update_column :skip_date, Time.now
       change_track(n)
     end
 
@@ -159,6 +161,10 @@ module Listlace
     private
 
     def change_track(by = 1, options = {})
+      if options[:auto]
+        @current_track.increment! :play_count
+        @current_track.update_column :play_date_utc, Time.now
+      end
       @current_track_index += by
       if options[:auto] && @repeat_mode
         case @repeat_mode
