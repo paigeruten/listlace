@@ -1,0 +1,86 @@
+            < listlace >
+
+listlace is a music player with a REPL.
+It allows you to forge complex playlists
+with ease... as long as you know your
+way around Ruby.
+
+No more staring a database in the face.
+No more click, shift-click, ctrl-click,
+ctrl-click, drag-and-drop, click,
+double-click.
+
+Conjuring audio with spells is much more
+appropriate, don't you think?
+
+-- install
+
+It's a gem. So do this:
+
+  $ gem install listlace
+
+But you also need mplayer. It has to be
+at /usr/bin/mplayer, for now.
+
+-- usage
+
+The gem gives you an executable called
+'listlace'. So do this:
+
+  $ listlace
+
+It will make a '.listlace' directory in
+$HOME, where the database of tracks and
+playlists is stored. Then it will give you
+a prompt. Don't be alarmed, it speaks
+Ruby.
+
+The only way to populate the database right
+now is to import your iTunes library.
+That goes a little something like this:
+
+  >> import :itunes, "/Users/jeremy/Music/iTunes/iTunes Music Library.xml"
+
+Now you can play your music.
+
+-- p's and q's
+
+p is the most important command. It's the
+play command. It's also the pause/resume
+command. You can pass it some tracks or a
+playlist, and it will queue up the music
+and start playing it, sequentially. If you
+don't pass it anything, that's when it acts
+as a pause/resume button.
+
+q is the queue command. You can pass it some
+tracks or a playlist and it'll add them to the
+queue. The queue is just an array of tracks
+to be played in order. The p command by
+itself will start playing the queue.
+
+-- commands
+
+* playback
+  - p: play/pause/resume
+  - stop: stop playback
+  - restart: seek back to the beginning of the current track
+  - back: go back a song
+  - skip: go to the next song
+  - seek: move to a different part of the track
+  - ff: fast-forward, or slow down
+  - repeat: choose the repeat mode, either :one or :all
+  - norepeat: turn off the repeat mode
+  - status: show what's currently playing, as well as other information
+* queue
+  - q: append some tracks to the queue, or get the queue
+  - clear: clear the queue
+  - shuffle: shuffle the songs in the queue
+  - sort: sort the songs in the queue however you want
+* library
+  - import: import another program's music library
+  - wipe_library: remove all tracks and playlists from the library
+
+-- selectors
+
+...

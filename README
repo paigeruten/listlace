@@ -1,86 +1,99 @@
-            < listlace >
+# listlace
 
-listlace is a music player with a REPL.
-It allows you to forge complex playlists
-with ease... as long as you know your
-way around Ruby.
+listlace is a music player that does Ruby. It's divided into two main parts:
+Playlists and the Player.
 
-No more staring a database in the face.
-No more click, shift-click, ctrl-click,
-ctrl-click, drag-and-drop, click,
-double-click.
+The idea is, first you make a playlist:
 
-Conjuring audio with spells is much more
-appropriate, don't you think?
+    >> my_playlist = album("turning the mind", "origin of symmetry")
+    => playlist (23 tracks)
 
--- install
+Then you play it:
+
+    >> p my_playlist
+    Playlist: playlist (1 / 23)
+    Turning The Mind - Maps (0:00 / 5:58)
+
+Playlists can be saved of course. You are encouraged to create an exorbitant
+amount of playlists, saved under simple, Symbol-friendly names. For example:
+
+    >> song("concerto no 3") & composer(:rachmaninov)
+    => playlist (3 tracks)
+    >> _.save :rach3
+    => rach3 (3 tracks)
+
+Then whenever you want to hear Rachmaninov's 3rd Piano Concerto:
+
+    >> p :rach3
+    Playlist: rach3 (1 / 3)
+    Concerto No 3 in D minor, op 30 - 1 Allegro ma non tanto - Sergei Rachmaninov (0:00 / 17:18)
+
+## Install
 
 It's a gem. So do this:
 
-  $ gem install listlace
+    $ gem install listlace
 
-But you also need mplayer. It has to be
-at /usr/bin/mplayer, for now.
+## Usage
 
--- usage
+The gem installs an executable. So do this:
 
-The gem gives you an executable called
-'listlace'. So do this:
+    $ listlace
+    Hello, you have 0 songs.
+    >>
 
-  $ listlace
+Now you can start typing commands. To get some songs in there, you can import
+your iTunes library:
 
-It will make a '.listlace' directory in
-$HOME, where the database of tracks and
-playlists is stored. Then it will give you
-a prompt. Don't be alarmed, it speaks
-Ruby.
+    >> import :itunes, "/Users/jeremy/Music/iTunes/iTunes Music Library.xml"
 
-The only way to populate the database right
-now is to import your iTunes library.
-That goes a little something like this:
+Or you can add a file or folder yourself with the add() command:
 
-  >> import :itunes, "/Users/jeremy/Music/iTunes/iTunes Music Library.xml"
+    >> add "/Users/jeremy/Music"
 
-Now you can play your music.
+Now you're ready to play.
 
--- p's and q's
+## Playlists
 
-p is the most important command. It's the
-play command. It's also the pause/resume
-command. You can pass it some tracks or a
-playlist, and it will queue up the music
-and start playing it, sequentially. If you
-don't pass it anything, that's when it acts
-as a pause/resume button.
+A playlist is just an Array. So you can add playlists together, call #filter on
+them, do set operations, and so on.
 
-q is the queue command. You can pass it some
-tracks or a playlist and it'll add them to the
-queue. The queue is just an array of tracks
-to be played in order. The p command by
-itself will start playing the queue.
+Playlists are created using selectors. These are methods that select tracks from
+your library based on certain criteria. So if you call the artist() method and
+pass it a String or Symbol, it will give you a playlist of all the tracks whose
+artist field contains your query. There's a selector for pretty much every track
+property.
 
--- commands
+Some special selectors are all(), none(), and playlist(). all() and none() do
+the obvious. playlist() loads a saved playlist. Just give it the name of the
+playlist you want, preferrably as a Symbol.
 
-* playback
-  - p: play/pause/resume
-  - stop: stop playback
-  - restart: seek back to the beginning of the current track
-  - back: go back a song
-  - skip: go to the next song
-  - seek: move to a different part of the track
-  - ff: fast-forward, or slow down
-  - repeat: choose the repeat mode, either :one or :all
-  - norepeat: turn off the repeat mode
-  - status: show what's currently playing, as well as other information
-* queue
-  - q: append some tracks to the queue, or get the queue
-  - clear: clear the queue
-  - shuffle: shuffle the songs in the queue
-  - sort: sort the songs in the queue however you want
-* library
-  - import: import another program's music library
-  - wipe_library: remove all tracks and playlists from the library
+For a full list of selectors, see the docs.
 
--- selectors
+## Player
 
-...
+The Player actually plays your playlists. There are all sorts of crazy buttons
+and dials on it that you can use to influence playback. Stop, pause, skip,
+fast-forward, and so on. Just what you'd expect.
+
+To start playing a playlist, use the p() method:
+
+    >> p all
+    Playlist: all (1 / 5901)
+    Breathing New Air - 4 Strings  (0:00 / 3:20)
+
+The Player contains a queue, which is a playlist. This is the only playlist it's
+allowed to play. When you play a playlist, the p() command is just queueing that
+playlist for you and then hitting the play button.
+
+To queue songs yourself, use the q() command:
+
+    >> q :rach2
+    => queue (3 tracks)
+    >> q :rach3
+    => queue (6 tracks)
+    >> p
+    Playlist: queue (1 / 6)
+    Concerto No 2 in C minor, op 18 - 1 Moderato - Sergei Rachmaninov (0:00 / 10:48)
+
+For a full list of playback commands, see the docs.

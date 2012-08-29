@@ -6,31 +6,29 @@ module Listlace
       if tracks_or_playlist.is_a? Playlist
         replace tracks_or_playlist.tracks.to_a
         @name = tracks_or_playlist.name
-        @model = tracks_or_playlist
       else
         replace tracks_or_playlist.to_a
         @name = name.to_s
-        @model = nil
       end
     end
 
     def save(name = nil)
-      if @model
-        @model.playlist_items.destroy_all
-        @model.name = @name = name if name
+      @name ||= name
+      if @name && (model = Playlist.find_by_name(@name))
+        model.playlist_items.destroy_all
+        model.name = @name
       else
-        @name = name if name
-        @model = Playlist.new(name: @name)
+        model = Playlist.new(name: @name)
       end
 
-      if @model.save
+      if model.save
         each.with_index do |track, i|
           item = PlaylistItem.new(position: i)
-          item.playlist = @model
+          item.playlist = model
           item.track = track
           item.save!
         end
-        @model
+        model
       else
         false
       end
