@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.requirements << "mplayer"
   s.executables << "listlace"
 
-  s.files = ["Gemfile", "Gemfile.lock", "LICENSE", "listlace.gemspec", "README"]
+  s.files = ["Gemfile", "Gemfile.lock", "LICENSE", "listlace.gemspec", "README.md", "README.old"]
   s.files += ["bin/listlace"]
   s.files += Dir["lib/**/*.rb"]
 
