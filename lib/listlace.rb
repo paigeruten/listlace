@@ -1,37 +1,22 @@
-module Listlace
-  extend self
-
-  DIR = ENV["LISTLACE_DIR"] || (ENV["HOME"] + "/.listlace")
-  PROMPT = [proc { ">> " }, proc { " | " }]
-  PRINT = proc do |output, value|
-    unless value.nil?
-      Pry::DEFAULT_PRINT.call(output, value)
-    end
-  end
-end
-
 require "open4"
 require "shellwords"
 require "active_record"
 require "fileutils"
+require "plist"
+require "active_support/core_ext/string"
 
-require "listlace/database"
+require "listlace/array_ext"
+require "listlace/library"
 require "listlace/player"
-require "listlace/mplayer"
-require "listlace/playlist_array"
+require "listlace/commands"
+require "listlace/models"
 
-require "listlace/models/track"
-require "listlace/models/playlist"
-require "listlace/models/playlist_item"
+module Listlace
+  extend Listlace::Library::Selectors
 
-require "listlace/commands/library"
-require "listlace/commands/playback"
-require "listlace/commands/selectors"
-require "listlace/commands/volume"
-require "listlace/commands/queue"
+  class << self
+    attr_accessor :library, :player
+  end
 
-$player = Listlace::Player.new
-
-at_exit do
-  Listlace.stop
+  DIR = ENV["LISTLACE_DIR"] || (ENV["HOME"] + "/.listlace")
 end

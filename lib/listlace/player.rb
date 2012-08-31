@@ -1,3 +1,5 @@
+require "listlace/player/mplayer"
+
 module Listlace
   # This is the music box. It contains a queue, which is an array of tracks. It
   # then plays these tracks sequentially. The buttons for play, pause, next,
@@ -7,7 +9,8 @@ module Listlace
 
     def initialize
       @mplayer = nil
-      @queue = PlaylistArray.new([], :queue)
+      @queue = []
+      @queue.name = :queue
       @current_track = nil
       @current_track_index = nil
       @paused = false
@@ -16,13 +19,21 @@ module Listlace
     end
 
     def queue(playlist = nil)
-      @queue << playlist if playlist
+      if playlist.is_a? Array
+        if @queue.empty? && playlist.name && !playlist.name.empty?
+          @queue = playlist.dup
+        else
+          @queue += playlist
+          @queue.name = :queue
+        end
+      end
       @queue.dup
     end
 
     def clear
       stop
       @queue.clear
+      @queue.name = :queue
     end
 
     def empty?
