@@ -18,6 +18,7 @@ module Listlace
           Process.wait(@pid)
           @quit_hook_active = true
           on_quit.call
+          ActiveRecord::Base.connection.close
         end
       end
 
