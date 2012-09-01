@@ -17,7 +17,7 @@ module Listlace
               player.pause
               status
             else
-              player.set_speed 1
+              player.speed = 1
               status
             end
           else
@@ -29,7 +29,6 @@ module Listlace
             end
           end
         else
-          player.stop
           player.clear
           q *tracks
           p
@@ -51,7 +50,8 @@ module Listlace
 
       # Go back one song in the queue.
       def back(n = 1)
-        if player.back(n)
+        player.back(n)
+        if player.started?
           status
         else
           puts "End of queue."
@@ -60,7 +60,8 @@ module Listlace
 
       # Go directly to the next song in the queue.
       def skip(n = 1)
-        if player.skip(n)
+        player.skip(n)
+        if player.started?
           status
         else
           puts "End of queue."
@@ -83,7 +84,7 @@ module Listlace
       # find agreeable. Call p to go back to normal. You can also pass a value
       # smaller than one to slow down.
       def ff(speed = 2)
-        player.set_speed(speed)
+        player.speed = speed
         status
       end
 
@@ -112,7 +113,7 @@ module Listlace
           case type
           when :playlist
             if player.started?
-            track_number = player.current_track_index + 1
+              track_number = player.current_track_index + 1
               num_tracks = q.length
               repeat_one = player.repeat_mode == :one ? REPEAT_SYMBOL : ""
               repeat_all = player.repeat_mode == :all ? REPEAT_SYMBOL : ""
@@ -127,7 +128,8 @@ module Listlace
               time = player.formatted_current_time
               total_time = player.current_track.formatted_total_time
               paused = player.paused? ? "|| " : ""
-              speed = player.speed != 1 ? "#{TIMES_SYMBOL}#{player.speed} " : ""
+              speed = player.speed
+              speed = speed != 1 ? "#{TIMES_SYMBOL}#{speed} " : ""
               puts "%s - %s (%s / %s) %s%s" % [name, artist, time, total_time, paused, speed]
             else
               puts "Stopped."

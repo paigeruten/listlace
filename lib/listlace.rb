@@ -5,10 +5,21 @@ require "plist"
 require "active_support/core_ext/string"
 
 require "listlace/array_ext"
+
+require "listlace/models/track"
+require "listlace/models/playlist"
+require "listlace/models/playlist_item"
+
 require "listlace/library"
+require "listlace/library/database"
+require "listlace/library/selectors"
+
+require "listlace/single_player"
+require "listlace/single_players/mplayer"
 require "listlace/player"
-require "listlace/commands"
-require "listlace/models"
+
+require "listlace/commands/library_commands"
+require "listlace/commands/player_commands"
 
 module Listlace
   extend Listlace::Library::Selectors

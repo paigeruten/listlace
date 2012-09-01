@@ -1,6 +1,3 @@
-require "listlace/library/database"
-require "listlace/library/selectors"
-
 module Listlace
   class Library
     def initialize(options = {})

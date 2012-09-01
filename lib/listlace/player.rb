@@ -1,19 +1,27 @@
-require "listlace/player/mplayer"
-
 module Listlace
-  # This is the music box. It contains a queue, which is an array of tracks. It
-  # then plays these tracks sequentially. The buttons for play, pause, next,
-  # previous, etc. are all located here.
+  # This is the music box. It plays playlists. It contains a queue, which is
+  # just a playlist. To tell it what to play, you add one or more playlists to
+  # the queue, then start playing using the start method.
+  #
+  # Playback commands like pause, resume, seek, and so on are delegated to the
+  # SinglePlayer, which takes care of playing each individual song.
+  #
+  # Each method that performs an action is like a button on a physical media
+  # player: you can press the buttons even if they aren't applicable to the
+  # current state of the player. If that's the case, the methods wil return
+  # false. Otherwise, they'll return a truthy value.
   class Player
+    DEFAULT_SINGLE_PLAYER = SinglePlayers::MPlayer
+
     attr_reader :current_track, :current_track_index, :repeat_mode
 
     def initialize
-      @mplayer = nil
+      @single_player = DEFAULT_SINGLE_PLAYER.new
       @queue = []
       @queue.name = :queue
       @current_track = nil
       @current_track_index = nil
-      @paused = false
+      @playlist_paused = false
       @started = false
       @repeat_mode = false
     end
@@ -34,14 +42,19 @@ module Listlace
       stop
       @queue.clear
       @queue.name = :queue
+      true
     end
 
     def empty?
       @queue.empty?
     end
 
+    def playlist_paused?
+      @playlist_paused
+    end
+
     def paused?
-      @paused
+      playlist_paused? or @single_player.paused?
     end
 
     def started?
@@ -51,36 +64,36 @@ module Listlace
     def start
       unless empty?
         @started = true
+        @playlist_paused = false
         @current_track = @queue.first
         @current_track_index = 0
-        load_track(@current_track)
+        play_track @current_track
+        true
+      else
+        false
       end
     end
 
     def stop
-      @mplayer.quit if @mplayer
-      @mplayer = nil
+      @single_player.stop
       @current_track = nil
       @current_track_index = nil
-      @paused = false
+      @playlist_paused = false
       @started = false
+      true
     end
 
     def pause
-      if not paused?
-        @paused = true
-        @mplayer.command "pause"
-      end
+      @single_player.pause
     end
 
     def resume
-      if paused?
-        @paused = false
-        if @mplayer && @mplayer.alive?
-          @mplayer.command "pause"
-        else
-          load_track @current_track
-        end
+      if playlist_paused?
+        play_track @current_track
+        @playlist_paused = false
+        true
+      else
+        @single_player.resume
       end
     end
 
@@ -93,6 +106,7 @@ module Listlace
       when :off
         @repeat_mode = false
       end
+      true
     end
 
     def restart
@@ -104,41 +118,47 @@ module Listlace
     end
 
     def skip(n = 1)
-      @current_track.increment! :skip_count
-      @current_track.update_column :skip_date, Time.now
+      if @current_track
+        @current_track.increment! :skip_count
+        @current_track.update_column :skip_date, Time.now
+      end
       change_track(n)
     end
 
     def seek(where)
-      case where
-      when Integer
-        @mplayer.command("seek %d 0" % [where], expect_answer: true)
-      when Range
-        @mplayer.command("seek %d 2" % [where.begin * 60 + where.end], expect_answer: true)
-      when String
-        @mplayer.command("seek %d 2" % [Track.parse_time(where) / 1000], expect_answer: true)
-      when Hash
-        if where[:abs]
-          if where[:abs].is_a? Integer
-            @mplayer.command("seek %d 2" % [where[:abs]], expect_answer: true)
-          else
-            seek(where[:abs])
+      if playlist_paused?
+        resume
+        pause
+        seek where
+      else
+        case where
+        when Integer
+          @single_player.seek(where, :relative)
+        when Range
+          seconds = where.begin * 60 + where.end
+          @single_player.seek(seconds * 1000, :absolute)
+        when String
+          @single_player.seek(Track.parse_time(where), :absolute)
+        when Hash
+          if where[:abs]
+            if where[:abs].is_a? Integer
+              @single_player.seek(where[:abs], :absolute)
+            else
+              seek(where[:abs])
+            end
+          elsif where[:percent]
+            @single_player.seek(where[:percent], :percent)
           end
-        elsif where[:percent]
-          @mplayer.command("seek %d 1" % [where[:percent]], expect_answer: true)
         end
       end
     end
 
     def speed
-      answer = @mplayer.command("get_property speed", expect_answer: true)
-      if answer =~ /^ANS_speed=([0-9.]+)$/
-        $1.to_f
-      end
+      @single_player.active? ? @single_player.speed : 1.0
     end
 
-    def set_speed(speed)
-      @mplayer.command("speed_set %f" % [speed], expect_answer: true)
+    def speed=(new_speed)
+      @single_player.speed(new_speed)
     end
 
     def shuffle
@@ -148,21 +168,19 @@ module Listlace
       else
         @queue.shuffle!
       end
+      true
     end
 
     def sort(&by)
       @queue.sort! &by
-
       if started?
         @current_track_index = @queue.index(@current_track)
       end
+      true
     end
 
     def current_time
-      answer = @mplayer.command "get_time_pos", expect_answer: true
-      if answer =~ /^ANS_TIME_POSITION=([0-9.]+)$/
-        ($1.to_f * 1000).to_i
-      end
+      @single_player.active? ? @single_player.current_time : 0
     end
 
     def formatted_current_time
@@ -172,39 +190,46 @@ module Listlace
     private
 
     def change_track(by = 1, options = {})
-      if options[:auto]
-        @current_track.increment! :play_count
-        @current_track.update_column :play_date_utc, Time.now
-      end
-      @current_track_index += by
-      if options[:auto] && @repeat_mode
-        case @repeat_mode
-        when :one
-          @current_track_index -= by
-        when :all
-          if @current_track_index >= @queue.length
-            @current_track_index = 0
+      if started?
+        if options[:auto]
+          @current_track.increment! :play_count
+          @current_track.update_column :play_date_utc, Time.now
+        end
+        @current_track_index += by
+        if options[:auto] && @repeat_mode
+          case @repeat_mode
+          when :one
+            @current_track_index -= by
+          when :all
+            if @current_track_index >= @queue.length
+              @current_track_index = 0
+            end
           end
         end
-      end
-      @current_track = @queue[@current_track_index]
-      if @current_track && @current_track_index >= 0
-        if paused?
-          @mplayer.quit if @mplayer
+        @current_track = @queue[@current_track_index]
+        if @current_track && @current_track_index >= 0
+          if @single_player.paused?
+            @single_player.stop
+            @playlist_paused = true
+          elsif not playlist_paused?
+            play_track @current_track
+          end
         else
-          load_track(@current_track)
+          stop
         end
         true
       else
-        stop
         false
       end
     end
 
-    def load_track(track)
-      @mplayer.quit if @mplayer
-      @mplayer = MPlayer.new(track) { send(:change_track, 1, auto: true) }
-      @paused = false
+    def play_track(track)
+      @single_player.play(track) do
+        change_track(1, auto: true)
+        ActiveRecord::Base.connection.close if defined?(ActiveRecord)
+      end
+      @playlist_paused = false
+      true
     end
   end
 end
