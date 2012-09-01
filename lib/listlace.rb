@@ -1,5 +1,4 @@
 require "open4"
-require "shellwords"
 require "active_record"
 require "fileutils"
 require "plist"

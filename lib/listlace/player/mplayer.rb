@@ -5,8 +5,8 @@ module Listlace
     # issuing commands through the slave protocol.
     class MPlayer
       def initialize(track, &on_quit)
-        cmd = "/usr/bin/mplayer -slave -quiet #{Shellwords.shellescape(track.location)}"
-        @pid, @stdin, @stdout, @stderr = Open4.popen4(cmd)
+        cmd = ["mplayer", "-slave", "-quiet", track.location]
+        @pid, @stdin, @stdout, @stderr = Open4.popen4(*cmd)
         @paused = false
         @extra_lines = 0
 
