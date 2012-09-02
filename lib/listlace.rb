@@ -4,7 +4,7 @@ require "fileutils"
 require "plist"
 require "active_support/core_ext/string"
 
-require "listlace/array_ext"
+require "listlace/core_ext/array"
 
 require "listlace/models/track"
 require "listlace/models/playlist"
