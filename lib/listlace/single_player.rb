@@ -20,9 +20,9 @@ module Listlace
       raise NotImplementedError
     end
 
-    # Begin playing a track. The track should respond to #location, which is the
-    # path where the audio file is located. The &on_end callback will be called
-    # when the track is finished playing.
+    # Begin playing a track. The track should be either a String representing a
+    # path to an audio file, or an object responding to #location. The &on_end
+    # callback will be called when the track is finished playing.
     def play(track, &on_end)
       raise NotImplementedError
     end

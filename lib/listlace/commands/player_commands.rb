@@ -125,8 +125,8 @@ module Listlace
             if player.started?
               name = player.current_track.name
               artist = player.current_track.artist
-              time = player.formatted_current_time
-              total_time = player.current_track.formatted_total_time
+              time = Listlace.format_time(player.current_time, include_milliseconds: false)
+              total_time = Listlace.format_time(player.current_track.total_time, include_milliseconds: false)
               paused = player.paused? ? "|| " : ""
               speed = player.speed
               speed = speed != 1 ? "#{TIMES_SYMBOL}#{speed} " : ""

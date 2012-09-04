@@ -32,7 +32,7 @@ module Listlace
         normalize = lambda do |value|
           case value
           when String
-            Track.parse_time(value)
+            Listlace.parse_time(value)
           when Integer
             value * 1000
           when Range

@@ -70,9 +70,10 @@ module Listlace
           # row already contains a hash of attributes almost ready to be passed to
           # ActiveRecord. We just need to modify the keys, e.g. change "Play Count"
           # to "play_count".
+          row["Play Date"] = row.delete("Play Date UTC")
+          row["Original ID"] = row.delete("Track ID")
           attributes = row.inject({}) do |acc, (key, value)|
             attribute = key.gsub(" ", "").underscore
-            attribute = "original_id" if attribute == "track_id"
             acc[attribute] = value if whitelist.include? attribute
             acc
           end

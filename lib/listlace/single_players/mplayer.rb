@@ -17,6 +17,12 @@ module Listlace
       def play(track, &on_end)
         _quit
 
+        track = SimpleTrack.new(track) if track.is_a? String
+
+        if not track.respond_to? :location
+          raise ArgumentError, "got a #{track.class} instead of a track"
+        end
+
         if File.exists? track.location
           cmd = ["mplayer", "-slave", "-quiet", track.location]
           @pid, @stdin, @stdout, @stderr = Open4.popen4(*cmd)

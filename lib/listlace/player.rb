@@ -18,7 +18,6 @@ module Listlace
     def initialize
       @single_player = DEFAULT_SINGLE_PLAYER.new
       @queue = []
-      @queue.name = :queue
       @current_track = nil
       @current_track_index = nil
       @playlist_paused = false
@@ -28,11 +27,13 @@ module Listlace
 
     def queue(playlist = nil)
       if playlist.is_a? Array
-        if @queue.empty? && playlist.name && !playlist.name.empty?
-          @queue = playlist.dup
+        playlist = playlist.dup
+        playlist.map! { |track| track.is_a?(String) ? SimpleTrack.new(track) : track }
+        playlist.select! { |track| track.respond_to? :location }
+        if @queue.empty?
+          @queue = playlist
         else
           @queue += playlist
-          @queue.name = :queue
         end
       end
       @queue.dup
@@ -41,7 +42,6 @@ module Listlace
     def clear
       stop
       @queue.clear
-      @queue.name = :queue
       true
     end
 
@@ -118,9 +118,8 @@ module Listlace
     end
 
     def skip(n = 1)
-      if @current_track
-        @current_track.increment! :skip_count
-        @current_track.update_column :skip_date, Time.now
+      if @current_track.respond_to?(:increment_skip_count)
+        @current_track.increment_skip_count
       end
       change_track(n)
     end
@@ -138,7 +137,7 @@ module Listlace
           seconds = where.begin * 60 + where.end
           @single_player.seek(seconds * 1000, :absolute)
         when String
-          @single_player.seek(Track.parse_time(where), :absolute)
+          @single_player.seek(Listlace.parse_time(where), :absolute)
         when Hash
           if where[:abs]
             if where[:abs].is_a? Integer
@@ -183,17 +182,12 @@ module Listlace
       @single_player.active? ? @single_player.current_time : 0
     end
 
-    def formatted_current_time
-      Track.format_time(current_time)
-    end
-
     private
 
     def change_track(by = 1, options = {})
       if started?
-        if options[:auto]
-          @current_track.increment! :play_count
-          @current_track.update_column :play_date_utc, Time.now
+        if options[:auto] && @current_track.respond_to?(:increment_play_count)
+          @current_track.increment_play_count
         end
         @current_track_index += by
         if options[:auto] && @repeat_mode

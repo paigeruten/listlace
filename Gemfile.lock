@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    listlace (0.0.6)
+    listlace (0.0.7)
       activerecord
       activesupport
       open4

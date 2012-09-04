@@ -5,6 +5,7 @@ require "plist"
 require "active_support/core_ext/string"
 
 require "listlace/core_ext/array"
+require "listlace/time_helper"
 
 require "listlace/models/track"
 require "listlace/models/playlist"
@@ -14,6 +15,7 @@ require "listlace/library"
 require "listlace/library/database"
 require "listlace/library/selectors"
 
+require "listlace/simple_track"
 require "listlace/single_player"
 require "listlace/single_players/mplayer"
 require "listlace/player"

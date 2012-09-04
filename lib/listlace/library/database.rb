@@ -61,8 +61,7 @@ module Listlace
             t.integer :sample_rate
             t.text :comments
             t.integer :play_count
-            t.integer :play_date
-            t.datetime :play_date_utc
+            t.datetime :play_date
             t.integer :skip_count
             t.datetime :skip_date
             t.integer :rating
