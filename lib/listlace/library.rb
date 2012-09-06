@@ -70,6 +70,7 @@ module Listlace
           # row already contains a hash of attributes almost ready to be passed to
           # ActiveRecord. We just need to modify the keys, e.g. change "Play Count"
           # to "play_count".
+          row["Title"] = row.delete("Name")
           row["Play Date"] = row.delete("Play Date UTC")
           row["Original ID"] = row.delete("Track ID")
           attributes = row.inject({}) do |acc, (key, value)|

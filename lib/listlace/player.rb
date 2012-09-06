@@ -153,11 +153,27 @@ module Listlace
     end
 
     def speed
-      @single_player.active? ? @single_player.speed : 1.0
+      @single_player.speed || 1.0
     end
 
     def speed=(new_speed)
-      @single_player.speed(new_speed)
+      @single_player.speed = new_speed
+    end
+
+    def mute
+      @single_player.mute
+    end
+
+    def unmute
+      @single_player.unmute
+    end
+
+    def volume
+      @single_player.volume
+    end
+
+    def volume=(new_volume)
+      @single_player.volume = new_volume
     end
 
     def shuffle
@@ -179,7 +195,11 @@ module Listlace
     end
 
     def current_time
-      @single_player.active? ? @single_player.current_time : 0
+      @single_player.current_time || 0
+    end
+
+    def total_time
+      @single_player.total_time
     end
 
     private

@@ -41,7 +41,7 @@ module Listlace
         ActiveRecord::Schema.define do
           create_table :tracks do |t|
             t.integer :original_id
-            t.string :name
+            t.string :title
             t.string :artist
             t.string :composer
             t.string :album

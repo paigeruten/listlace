@@ -123,14 +123,14 @@ module Listlace
             end
           when :playing
             if player.started?
-              name = player.current_track.name
+              title = player.current_track.title
               artist = player.current_track.artist
               time = Listlace.format_time(player.current_time, include_milliseconds: false)
-              total_time = Listlace.format_time(player.current_track.total_time, include_milliseconds: false)
+              total_time = Listlace.format_time(player.total_time, include_milliseconds: false)
               paused = player.paused? ? "|| " : ""
               speed = player.speed
               speed = speed != 1 ? "#{TIMES_SYMBOL}#{speed} " : ""
-              puts "%s - %s (%s / %s) %s%s" % [name, artist, time, total_time, paused, speed]
+              puts "%s - %s (%s / %s) %s%s" % [title, artist, time, total_time, paused, speed]
             else
               puts "Stopped."
             end

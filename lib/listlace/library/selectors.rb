@@ -1,7 +1,7 @@
 module Listlace
   class Library
     module Selectors
-      STRING_SELECTORS = %w(name artist composer album album_artist genre comments location)
+      STRING_SELECTORS = %w(title artist composer album album_artist genre comments location)
       INTEGER_SELECTORS = %w(disc_number disc_count track_number track_count year bit_rate sample_rate play_count skip_count rating)
 
       STRING_SELECTORS.each do |column|
@@ -19,10 +19,6 @@ module Listlace
           playlist *playlists
         end
       end
-
-      # rename the "name" selector to "song"
-      alias_method :song, :name
-      remove_method :name
 
       # The length selector is an integer selector for the length of a track. A
       # plain integer given to it represents the number of seconds. It can also take
@@ -72,15 +68,11 @@ module Listlace
       #
       # This method shouldn't have to be used directly. Many convenient methods are
       # generated for you, one for each string field you may want to select on.
-      # These are: artist, composer, album, album_artist, genre, comments, location.
-      # For example:
+      # These are: title, artist, composer, album, album_artist, genre, comments,
+      # location. For example:
       #
       #   artist :muse, match: :exact #=> playlist (108 tracks)
       #   composer :rachmanino #=> playlist (33 tracks)
-      #
-      # To match the name of a track, use song:
-      #
-      #   song "frontier psychiatrist" #=> playlist (1 track)
       #
       def string_selector(column, query, options = {})
         options[:match] ||= :middle
