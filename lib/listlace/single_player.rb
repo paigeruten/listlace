@@ -84,6 +84,11 @@ module Listlace
       raise NotImplementedError
     end
 
+    # Returns true if audio is muted.
+    def muted?
+      raise NotImplementedError
+    end
+
     # Mutes the audio player.
     def mute
       raise NotImplementedError
