@@ -10,13 +10,14 @@ Gem::Specification.new do |s|
   s.license = "MIT"
   s.required_ruby_version = ">= 1.9.2"
   s.requirements << "mplayer"
+  s.requirements << "taglib"
   s.executables << "listlace"
 
   s.files = ["Gemfile", "Gemfile.lock", "LICENSE", "listlace.gemspec", "README.md", "README.old"]
   s.files += ["bin/listlace"]
   s.files += Dir["lib/**/*.rb"]
 
-  %w(pry plist sqlite3 activerecord activesupport open4).each do |gem_name|
+  %w(pry plist sqlite3 activerecord activesupport open4 taglib-ruby).each do |gem_name|
     s.add_runtime_dependency gem_name
   end
 

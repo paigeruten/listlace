@@ -9,6 +9,22 @@ module Listlace
         library.save_playlist(playlist)
       end
 
+      def add(path, metadata = {})
+        if File.directory?(path)
+          raise NotImplementedError, "can't add whole folders yet"
+        else
+          begin
+            if library.add_track(path, metadata)
+              puts "1 track added."
+            else
+              puts "Track couldn't be added. Perhaps it's not an audio file?"
+            end
+          rescue Library::FileNotFoundError => e
+            puts e.message
+          end
+        end
+      end
+
       # Imports the music library from another program. Currently only iTunes is
       # supported.
       def import(from, path)

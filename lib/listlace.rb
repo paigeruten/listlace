@@ -3,6 +3,7 @@ require "active_record"
 require "fileutils"
 require "plist"
 require "active_support/core_ext/string"
+require "taglib"
 
 require "listlace/core_ext/array"
 require "listlace/time_helper"

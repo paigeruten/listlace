@@ -47,27 +47,23 @@ module Listlace
             t.string :album
             t.string :album_artist
             t.string :genre
-            t.string :kind
-            t.integer :size
             t.integer :total_time
             t.integer :disc_number
             t.integer :disc_count
             t.integer :track_number
             t.integer :track_count
             t.integer :year
-            t.datetime :date_modified
-            t.datetime :date_added
+            t.datetime :date_modified, null: false
+            t.datetime :date_added, null: false
             t.integer :bit_rate
             t.integer :sample_rate
             t.text :comments
-            t.integer :play_count
+            t.integer :play_count, null: false, default: 0
             t.datetime :play_date
-            t.integer :skip_count
+            t.integer :skip_count, null: false, default: 0
             t.datetime :skip_date
             t.integer :rating
-            t.integer :album_rating
-            t.boolean :album_rating_computed
-            t.string :location
+            t.string :location, null: false
           end
 
           create_table :playlists do |t|

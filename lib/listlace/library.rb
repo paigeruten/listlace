@@ -55,6 +55,39 @@ module Listlace
       playlist
     end
 
+    def add_track(path, metadata = {})
+      if File.exists?(path)
+        TagLib::FileRef.open(path) do |file|
+          if tag = file.tag
+            metadata[:album] ||= tag.album
+            metadata[:artist] ||= tag.artist
+            metadata[:comments] ||= tag.comment
+            metadata[:genre] ||= tag.genre
+            metadata[:title] ||= tag.title
+            metadata[:track_number] ||= tag.track unless tag.track.zero?
+            metadata[:year] ||= tag.year unless tag.year.zero?
+          end
+
+          if prop = file.audio_properties
+            metadata[:bit_rate] = prop.bitrate
+            metadata[:sample_rate] = prop.sample_rate
+            metadata[:total_time] = prop.length * 1000
+          end
+
+          if metadata[:title].nil? or metadata[:title].empty?
+            metadata[:title] = File.basename(path, ".*")
+          end
+
+          metadata[:location] = File.expand_path(path)
+
+          track = Track.new(metadata)
+          track.save && track
+        end
+      else
+        raise FileNotFoundError, "File '%s' doesn't exist." % [path]
+      end
+    end
+
     def import(from, path, options = {})
       logger = options[:logger]
       if not File.exists?(path)
@@ -67,6 +100,11 @@ module Listlace
         num_tracks = 0
         whitelist = tracks.new.attributes.keys
         data["Tracks"].each do |track_id, row|
+          if row["Kind"] !~ /audio/
+            logger.("[skipping non-audio file]") if logger
+            next
+          end
+
           # row already contains a hash of attributes almost ready to be passed to
           # ActiveRecord. We just need to modify the keys, e.g. change "Play Count"
           # to "play_count".
@@ -91,13 +129,8 @@ module Listlace
           end
 
           track = tracks.new(attributes)
-
-          if track.kind =~ /audio/
-            if track.save
-              num_tracks += 1
-            end
-          else
-            logger.("[skipping non-audio file]") if logger
+          if track.save
+            num_tracks += 1
           end
         end
         logger.("Imported #{num_tracks} tracks successfully.") if logger
