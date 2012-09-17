@@ -62,7 +62,7 @@ module Listlace
             t.datetime :play_date
             t.integer :skip_count, null: false, default: 0
             t.datetime :skip_date
-            t.integer :rating
+            t.integer :rating, null: false, default: 0
             t.string :location, null: false
           end
 

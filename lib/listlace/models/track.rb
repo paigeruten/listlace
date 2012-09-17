@@ -3,7 +3,7 @@ module Listlace
     has_many :playlist_items
     has_many :playlists, through: :playlist_items
 
-    validates :location, presence: true
+    validates :location, presence: true, uniqueness: true
 
     before_create { |track| track.date_added = Time.now }
     before_save { |track| track.date_modified = Time.now }

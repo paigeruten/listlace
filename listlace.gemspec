@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "listlace"
-  s.version = "0.0.8"
-  s.date = "2012-09-07"
+  s.version = "0.0.9"
+  s.date = "2012-09-17"
   s.summary = "A music player in a REPL."
   s.description = "Listlace is a music player which is interacted with through a Ruby REPL."
   s.author = "Jeremy Ruten"
@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.files += ["bin/listlace"]
   s.files += Dir["lib/**/*.rb"]
 
-  %w(pry plist sqlite3 activerecord activesupport open4 taglib-ruby).each do |gem_name|
+  %w(bundler pry plist sqlite3 activerecord activesupport open4 taglib-ruby).each do |gem_name|
     s.add_runtime_dependency gem_name
   end
 

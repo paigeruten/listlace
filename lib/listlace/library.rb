@@ -55,7 +55,8 @@ module Listlace
       playlist
     end
 
-    def add_track(path, metadata = {})
+    def add_track(path, options = {})
+      metadata = options.dup
       if File.exists?(path)
         TagLib::FileRef.open(path) do |file|
           if tag = file.tag

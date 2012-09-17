@@ -20,6 +20,16 @@ module Listlace
         end
       end
 
+      # Selects all the tracks in the library.
+      def all
+        playlist library.tracks
+      end
+
+      # Selects no tracks, returning an empty playlist.
+      def none
+        playlist
+      end
+
       # The length selector is an integer selector for the length of a track. A
       # plain integer given to it represents the number of seconds. It can also take
       # a String in the format "1:23", to represent 83 seconds, for example. These
@@ -149,6 +159,7 @@ module Listlace
       # If given no arguments, it returns a blank playlist.
       #
       def playlist(*args)
+        args << [] if args.empty?
         args.map do |object|
           case object
           when Track
