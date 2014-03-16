@@ -1,4 +1,4 @@
-# Listlace
+# ♫> Listlace
 
 Listlace is an mpd (music player daemon) client that uses a Ruby prompt as the interface, allowing you to use the power of Ruby to query your music library and build playlists.
 
