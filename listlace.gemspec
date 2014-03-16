@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "listlace"
-  s.version = "0.0.1"
+  s.version = "0.1.0"
   s.date = "2014-03-15"
   s.summary = "An mpd (music player daemon) client with a Ruby shell as the interface."
   s.description = "Listlace is an mpd (music player daemon) client with a Ruby shell as the interface."
