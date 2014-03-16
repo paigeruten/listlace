@@ -4,22 +4,21 @@ require "bundler/setup"
 require "pry"
 require "listlace"
 
-ActiveRecord::Migration.verbose = false
+host, port = *ARGV
+host ||= "localhost"
+port ||= 6600
 
-Listlace.extend Listlace::Commands::LibraryCommands
-Listlace.extend Listlace::Commands::PlayerCommands
-
-Listlace.library = Listlace::Library.new
-Listlace.player = Listlace::Player.new
-
-puts "Hello, you have #{Listlace.library.size} songs."
-
-at_exit do
-  Listlace.player.stop
+begin
+  listlace = Listlace.new(host, port)
+rescue Exception => e
+  puts "Couldn't connect to MPD server."
+  puts "Reason: #{e.message}"
+  exit
 end
 
-Listlace.pry(
+listlace.pry(
   quiet: true,
-  prompt: [proc { ">> " }, proc { " | " }],
+  prompt: [proc { "\u266B> " }, proc { " | " }],
   print: proc { |output, value| Pry::DEFAULT_PRINT.call(output, value) unless value.nil? }
 )
+

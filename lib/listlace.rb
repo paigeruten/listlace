@@ -1,35 +1,19 @@
-require "open4"
-require "active_record"
-require "fileutils"
-require "plist"
-require "active_support/core_ext/string"
-require "taglib"
+require "mpd_client"
 
-require "listlace/core_ext/array"
-require "listlace/time_helper"
+require "listlace/commands"
 
-require "listlace/models/track"
-require "listlace/models/playlist"
-require "listlace/models/playlist_item"
+class Listlace
+  attr_reader :mpd
 
-require "listlace/library"
-require "listlace/library/database"
-require "listlace/library/selectors"
+  include Commands
 
-require "listlace/simple_track"
-require "listlace/single_player"
-require "listlace/single_players/mplayer"
-require "listlace/player"
-
-require "listlace/commands/library_commands"
-require "listlace/commands/player_commands"
-
-module Listlace
-  extend Listlace::Library::Selectors
-
-  class << self
-    attr_accessor :library, :player
+  def initialize(host, port)
+    @mpd = MPDClient.new
+    @mpd.connect(host, port)
   end
 
-  DIR = ENV["LISTLACE_DIR"] || (ENV["HOME"] + "/.listlace")
+  def disconnect
+    @mpd.disconnect
+  end
 end
+

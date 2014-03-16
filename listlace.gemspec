@@ -1,23 +1,21 @@
 Gem::Specification.new do |s|
   s.name = "listlace"
-  s.version = "0.0.9"
-  s.date = "2012-09-17"
-  s.summary = "A music player in a REPL."
-  s.description = "Listlace is a music player which is interacted with through a Ruby REPL."
+  s.version = "0.0.1"
+  s.date = "2014-03-15"
+  s.summary = "An mpd (music player daemon) client with a Ruby shell as the interface."
+  s.description = "Listlace is an mpd (music player daemon) client with a Ruby shell as the interface."
   s.author = "Jeremy Ruten"
   s.email = "jeremy.ruten@gmail.com"
   s.homepage = "http://github.com/yjerem/listlace"
   s.license = "MIT"
   s.required_ruby_version = ">= 1.9.2"
-  s.requirements << "mplayer"
-  s.requirements << "taglib"
   s.executables << "listlace"
 
-  s.files = ["Gemfile", "Gemfile.lock", "LICENSE", "listlace.gemspec", "README.md", "README.old"]
+  s.files = ["Gemfile", "Gemfile.lock", "LICENSE", "listlace.gemspec", "README.md"]
   s.files += ["bin/listlace"]
   s.files += Dir["lib/**/*.rb"]
 
-  %w(bundler pry plist sqlite3 activerecord activesupport open4 taglib-ruby).each do |gem_name|
+  %w(bundler pry mpd_client).each do |gem_name|
     s.add_runtime_dependency gem_name
   end
 
@@ -25,3 +23,4 @@ Gem::Specification.new do |s|
     s.add_development_dependency gem_name
   end
 end
+
