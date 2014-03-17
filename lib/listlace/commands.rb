@@ -1,16 +1,38 @@
 class Listlace
   module Commands
-    REPEAT_SYMBOL = "\u221E"
-    TIMES_SYMBOL = "\u00D7"
-
-    def p
-      case mpd.status["state"]
-      when "play"
-        mpd.pause(1)
-      when "pause"
-        mpd.pause(0)
-      when "stop"
+    def p(*playlist)
+      if playlist.empty?
+        case mpd.status[:state]
+        when :play
+          mpd.pause = true
+        when :pause
+          mpd.pause = false
+        when :stop
+          mpd.play
+        end
+      else
+        mpd.clear
+        playlist.flatten.each do |song|
+          mpd.add song.file
+        end
         mpd.play
+      end
+      nil
+    end
+
+    def stop
+      mpd.stop
+    end
+
+    def q(*playlist)
+      if playlist.empty?
+        mpd.queue
+      else
+        mpd.clear
+        playlist.flatten.each do |song|
+          mpd.add song.file
+        end
+        nil
       end
     end
   end

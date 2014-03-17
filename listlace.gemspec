@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.files += ["bin/listlace"]
   s.files += Dir["lib/**/*.rb"]
 
-  %w(bundler pry mpd_client).each do |gem_name|
+  %w(bundler pry ruby-mpd).each do |gem_name|
     s.add_runtime_dependency gem_name
   end
 
