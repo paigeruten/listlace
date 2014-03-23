@@ -54,7 +54,18 @@ You can chain selectors together to narrow down a playlist:
     ♫> _why.album(:elfin_princess).title(/^the/)
     => [1 song]
 
-Here's a list of all tag selectors: `title`, `title_exact`, `artist`, `artist_exact`, `album`, `album_exact`, `genre`, and `genre_exact`.
+There are also numeric selectors, to which you can pass a `Range` to match against or a `Hash` that specifies one or more comparison operators:
+
+    ♫> year 2000, 2004
+    => [362 songs]
+    ♫> year 1990..1999
+    => [521 songs]
+    ♫> year lt: 1970
+    => [76 songs]
+    
+The comparison operators are `:eq`, `:ne`, `:gt`, `:ge`, `:lt`, and `:le`. You can also just use `:==`, `:>`, `:>=`, `:<`, and `:<=`.
+
+Here's a list of all tag selectors: `title`, `title_exact`, `artist`, `artist_exact`, `album`, `album_exact`, `genre`, `genre_exact`, `track`, `disc`, `year`, and `time`.
 
 In addition to tag selectors, here are some special selectors:
 
@@ -153,6 +164,18 @@ In addition to tag selectors, here are some special selectors:
     ...
     ♫> genres title(:constantinople)
     TMBG (1 song)
+
+### years
+
+`years` with no arguments lists all the years in your music library. If you pass it a playlist, it will list all the years in that playlist.
+
+    ♫> years
+    2007 (205 songs)
+    2010 (220 songs)
+    2012 (148 songs)
+    ...
+    ♫> years artist :the_avalanches
+    2000 (18 songs)
 
 ### mpd
 

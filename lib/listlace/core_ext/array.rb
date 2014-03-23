@@ -3,7 +3,7 @@ class Array
     @is_playlist ||= all? { |x| x.is_a? MPD::Song }
   end
 
-  Listlace::Selectors::TAG_SELECTORS.each do |tag|
+  Listlace::Selectors::STRING_SELECTORS.each do |tag|
     define_method(tag) do |*queries|
       queries.map do |query|
         case query
@@ -24,6 +24,26 @@ class Array
       end
     end
   end
+
+  Listlace::Selectors::NUMERIC_SELECTORS.each do |tag|
+    define_method(tag) do |*queries|
+      queries.map do |query|
+        case query
+        when Numeric
+          self.select { |song| song.send(tag) == query }
+        when Hash
+          query.map do |op, value|
+            op = { eq: "==", ne: "!=", lt: "<", le: "<=", gt: ">", ge: ">=" }[op] || op
+            self.select { |song| song.send(tag).to_i.send(op, value) }
+          end.inject(:&)
+        when Range
+          self.select { |song| query === song.send(tag) }
+        end
+      end.inject(&:|)
+    end
+  end
+
+  alias year date
   
   alias _original_inspect inspect
   def inspect

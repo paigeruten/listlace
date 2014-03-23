@@ -1,8 +1,9 @@
 class Listlace
   module Selectors
-    TAG_SELECTORS = %w(title artist album genre)
+    STRING_SELECTORS = %w(title artist album genre)
+    NUMERIC_SELECTORS = %w(track date disc time)
 
-    TAG_SELECTORS.each do |tag|
+    STRING_SELECTORS.each do |tag|
       define_method(tag) do |*queries|
         all.send(tag, *queries)
       end
@@ -11,6 +12,14 @@ class Listlace
         all.send("#{tag}_exact", *queries)
       end
     end
+
+    NUMERIC_SELECTORS.each do |tag|
+      define_method(tag) do |*queries|
+        all.send(tag, *queries)
+      end
+    end
+
+    alias year date
 
     def all
       @all ||= mpd.songs

@@ -67,6 +67,14 @@ class Listlace
       end
       nil
     end
+
+    def years(playlist = nil)
+      (playlist || all).group_by(&:date).each do |year, songs|
+        plural = (songs.length == 1) ? "" : "s"
+        puts "#{year} (#{songs.length} song#{plural})"
+      end
+      nil
+    end
   end
 end
 
