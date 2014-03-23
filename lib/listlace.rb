@@ -1,9 +1,9 @@
 require "ruby-mpd"
 
-require "listlace/core_ext/array"
-
 require "listlace/commands"
 require "listlace/selectors"
+
+require "listlace/core_ext/array"
 
 class Listlace
   attr_reader :mpd

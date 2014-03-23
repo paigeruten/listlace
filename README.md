@@ -44,6 +44,16 @@ You can also pass in a `Regexp` or a `Symbol`:
 
 Underscores in symbols are interpreted as spaces.
 
+You can pass multiple queries to a selector, and it will select all songs that match **any** of those queries:
+
+    ♫> _why = artist(:the_thirsty_cups, :moonboots, :the_child_who_was_a_keyhole)
+    => [33 songs]
+
+You can chain selectors together to narrow down a playlist:
+
+    ♫> _why.album(:elfin_princess).title(/^the/)
+    => [1 song]
+
 Here's a list of all tag selectors: `title`, `title_exact`, `artist`, `artist_exact`, `album`, `album_exact`, `genre`, and `genre_exact`.
 
 In addition to tag selectors, here are some special selectors:
@@ -61,20 +71,6 @@ In addition to tag selectors, here are some special selectors:
 
     ♫> none
     => []
-
-### search
-
-`search` will match **any** tag that contains your query.
-
-    ♫> search "thirsty"
-    => [8 songs]
-
-### where, where\_exact
-
-`where` and `where_exact` let you specify multiple queries for different tags:
-
-    ♫> where(artist: "thirsty", title: "belljar")
-    => [1 song]
 
 ## Commands
 
