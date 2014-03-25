@@ -39,7 +39,8 @@ class Listlace
 
     def list(playlist = nil)
       (playlist || all).each do |song|
-        puts "#{song.artist} - #{song.album} - #{song.title}"
+        time = TimeHelpers.format_time(song.time)
+        puts "#{song.artist} - #{song.album} - #{song.title} (#{time})"
       end
       nil
     end

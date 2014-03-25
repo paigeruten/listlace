@@ -2,6 +2,7 @@ require "ruby-mpd"
 
 require "listlace/commands"
 require "listlace/selectors"
+require "listlace/time_helpers"
 
 require "listlace/core_ext/array"
 

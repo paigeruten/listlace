@@ -26,23 +26,7 @@ Query your music library and build playlists using selectors. There are selector
     ♫> artist "thirsty cups"
     => [8 songs]
 
-It returned an Array of 8 Songs. To do an exact, case-sensitive search, use `artist_exact`:
-
-    ♫> artist_exact "thirsty cups"
-    => []
-    ♫> artist_exact "The Thirsty Cups"
-    => [8 songs]
-
-The first one didn't match anything, the second one matched the same 8 songs.
-
-You can also pass in a `Regexp` or a `Symbol`:
-
-    ♫> artist :the_thirsty_cups
-    => [8 songs]
-    ♫> artist /the thirst(y|ier|iest) cups/
-    => [8 songs]
-
-Underscores in symbols are interpreted as spaces.
+It returned an Array of 8 Songs.
 
 You can pass multiple queries to a selector, and it will select all songs that match **any** of those queries:
 
@@ -54,7 +38,35 @@ You can chain selectors together to narrow down a playlist:
     ♫> _why.album(:elfin_princess).title(/^the/)
     => [1 song]
 
-There are also numeric selectors, to which you can pass a `Range` to match against or a `Hash` that specifies one or more comparison operators:
+### String selectors
+
+The string selectors are: `title`, `artist`, `album`, and `genre`.
+
+String selectors have "exact" counterparts: `title_exact`, `artist_exact`, `album_exact`, and `genre_exact`.
+
+Use these "exact" selectors to do an exact, case-sensitive search:
+
+    ♫> artist_exact "thirsty cups"
+    => []
+    ♫> artist_exact "The Thirsty Cups"
+    => [8 songs]
+
+The first one didn't match anything, the second one matched the same 8 songs.
+
+You can also pass in a `Regexp` or a `Symbol` to a string selector:
+
+    ♫> artist :the_thirsty_cups
+    => [8 songs]
+    ♫> artist /the thirst(y|ier|iest) cups/
+    => [8 songs]
+
+Underscores in symbols are interpreted as spaces.
+
+### Numeric selectors
+
+The numeric selectors are: `track`, `disc`, and `year`.
+
+In addition to `Integers`, you can pass a `Range` to match against or a `Hash` that specifies one or more comparison operators:
 
     ♫> year 2000, 2004
     => [362 songs]
@@ -62,12 +74,27 @@ There are also numeric selectors, to which you can pass a `Range` to match again
     => [521 songs]
     ♫> year lt: 1970
     => [76 songs]
-    
+
 The comparison operators are `:eq`, `:ne`, `:gt`, `:ge`, `:lt`, and `:le`. You can also just use `:==`, `:>`, `:>=`, `:<`, and `:<=`.
 
-Here's a list of all tag selectors: `title`, `title_exact`, `artist`, `artist_exact`, `album`, `album_exact`, `genre`, `genre_exact`, `track`, `disc`, `year`, and `time`.
+### Time selectors
 
-In addition to tag selectors, here are some special selectors:
+The time selector is just `time`, which matches the length of songs in seconds.
+
+It's basically a numeric selector, but you can pass a String containing a formatted time in place of a number:
+
+    ♫> time "1:23"
+    => [2 songs]
+    ♫> time "8:00"..."9:00"
+    => [79 songs]
+    ♫> time gt: "20:00"
+    => [5 songs]
+    ♫> time lt: 20
+    => [27 songs]
+
+"1:23" means 1 minute and 23 seconds, and "1:23:45" means 1 hour, 23 minutes, 45 seconds. If you just pass an integer, it is the number of seconds.
+
+### Special selectors
 
 ### all
 
@@ -112,15 +139,15 @@ In addition to tag selectors, here are some special selectors:
 `list` with no arguments lists all the songs in your music library. If you pass it a playlist, it will list all the songs in that playlist.
 
     ♫> list
-    Air - 10 000 Hz Legend - Electronic Performers
-    Air - 10 000 Hz Legend - How Does It Make You Feel?
-    Air - 10 000 Hz Legend - Radio #1
+    Air - 10 000 Hz Legend - Electronic Performers (5:36)
+    Air - 10 000 Hz Legend - How Does It Make You Feel? (4:38)
+    Air - 10 000 Hz Legend - Radio #1 (4:23)
     ...
     ♫> list title :fish
-    Eisley - Currents - Blue Fish
-    Moonboots - Elfin Princess - The Fish Said Hello
-    Radiohead - In Rainbows - Weird Fishes/Arpeggi
-    Thee More Shallows - A History of Sport Fishing - A History of Sport Fishing
+    Eisley - Currents - Blue Fish (4:02)
+    Moonboots - Elfin Princess - The Fish Said Hello (2:44)
+    Radiohead - In Rainbows - Weird Fishes/Arpeggi (5:18)
+    Thee More Shallows - A History of Sport Fishing - A History of Sport Fishing (7:00)
 
 ### artists
 

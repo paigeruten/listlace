@@ -5,46 +5,28 @@ class Array
 
   Listlace::Selectors::STRING_SELECTORS.each do |tag|
     define_method(tag) do |*queries|
-      queries.map do |query|
-        case query
-        when Regexp
-          query = Regexp.new(query.source, Regexp::IGNORECASE) # case-insensitize
-          self.select { |song| song.send(tag).to_s =~ query }
-        when Symbol
-          self.select { |song| song.send(tag).to_s.downcase[query.to_s.tr("_", " ")] }
-        when String
-          self.select { |song| song.send(tag).to_s.downcase == query }
-        end
-      end.inject(:|)
+      Listlace::Selectors.string_selector(tag, self, false, *queries)
     end
 
     define_method("#{tag}_exact") do |*queries|
-      queries.map do |query|
-        self.select { |song| song.send(tag).to_s == query.to_s }
-      end
+      Listlace::Selectors.string_selector(tag, self, true, *queries)
     end
   end
 
   Listlace::Selectors::NUMERIC_SELECTORS.each do |tag|
     define_method(tag) do |*queries|
-      queries.map do |query|
-        case query
-        when Numeric
-          self.select { |song| song.send(tag) == query }
-        when Hash
-          query.map do |op, value|
-            op = { eq: "==", ne: "!=", lt: "<", le: "<=", gt: ">", ge: ">=" }[op] || op
-            self.select { |song| song.send(tag).to_i.send(op, value) }
-          end.inject(:&)
-        when Range
-          self.select { |song| query === song.send(tag) }
-        end
-      end.inject(&:|)
+      Listlace::Selectors.numeric_selector(tag, self, *queries)
+    end
+  end
+
+  Listlace::Selectors::TIME_SELECTORS.each do |tag|
+    define_method(tag) do |*queries|
+      Listlace::Selectors.time_selector(tag, self, *queries)
     end
   end
 
   alias year date
-  
+
   alias _original_inspect inspect
   def inspect
     if playlist?
