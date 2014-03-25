@@ -96,14 +96,14 @@ It's basically a numeric selector, but you can pass a String containing a format
 
 ### Special selectors
 
-### all
+#### all
 
 `all` returns all the songs in your library.
 
     ♫> all
     => [3560 songs]
 
-### none
+#### none
 
 `none` returns an empty playlist.
 
