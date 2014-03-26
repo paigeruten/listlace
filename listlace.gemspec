@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "listlace"
-  s.version = "0.2.1"
-  s.date = "2014-03-24"
+  s.version = "0.2.2"
+  s.date = "2014-03-25"
   s.summary = "An mpd (music player daemon) client with a Ruby shell as the interface."
   s.description = "Listlace is an mpd (music player daemon) client with a Ruby shell as the interface."
   s.author = "Jeremy Ruten"
@@ -15,12 +15,8 @@ Gem::Specification.new do |s|
   s.files += ["bin/listlace"]
   s.files += Dir["lib/**/*.rb"]
 
-  %w(bundler pry ruby-mpd).each do |gem_name|
-    s.add_runtime_dependency gem_name
-  end
-
-  %w(rake).each do |gem_name|
-    s.add_development_dependency gem_name
-  end
+  s.add_runtime_dependency "bundler", "~> 1.5"
+  s.add_runtime_dependency "pry", "~> 0.9"
+  s.add_runtime_dependency "ruby-mpd", "~> 0.3", ">= 0.3.1"
 end
 

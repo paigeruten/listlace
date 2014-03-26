@@ -1,13 +1,13 @@
 PATH
   remote: .
   specs:
-    listlace (0.2.1)
-      bundler
-      pry
-      ruby-mpd
+    listlace (0.2.2)
+      bundler (~> 1.5)
+      pry (~> 0.9)
+      ruby-mpd (~> 0.3, >= 0.3.1)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     coderay (1.1.0)
     method_source (0.8.2)
@@ -15,7 +15,6 @@ GEM
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
-    rake (0.9.2.2)
     ruby-mpd (0.3.1)
     slop (3.5.0)
 
@@ -24,4 +23,3 @@ PLATFORMS
 
 DEPENDENCIES
   listlace!
-  rake
