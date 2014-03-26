@@ -9,7 +9,9 @@ require "listlace/core_ext/array"
 class Listlace
   attr_reader :mpd
 
-  include Commands
+  include Commands::InfoCommands
+  include Commands::PlaybackCommands
+  include Commands::QueueCommands
   include Selectors
 
   def initialize(host, port)
