@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    listlace (0.2.0)
+    listlace (0.2.1)
       bundler
       pry
       ruby-mpd

@@ -134,6 +134,54 @@ It's basically a numeric selector, but you can pass a String containing a format
 
     ♫> stop
 
+### skip
+
+`skip` goes to the next song. If you give it a number, it will go that many songs ahead.
+
+    ♫> skip
+    ♫> skip 3
+
+### back
+
+`back` goes back a song. If you give it a number, it will go that many songs back.
+
+    ♫> back
+    ♫> back 3
+
+### restart
+
+`restart` goes back to the beginning of the current song.
+
+    ♫> restart
+
+### pause
+
+`pause` pauses the current song.
+
+    ♫> pause
+
+### resume
+
+`resume` resumes the current song after being paused.
+
+    ♫> resume
+
+### seek
+
+`seek` seeks forward or backward the specified number of seconds. You can also pass a String containing a formatted time, like "1:23", to skip ahead that many minutes and seconds, or "-1:23" to skip backward.
+
+    ♫> seek 10
+    ♫> seek -10
+    ♫> seek "1:23"
+    ♫> seek "-0:10"
+
+### seek_to
+
+`seek_to` seeks to an exact position of the current playing song. You can give it a number of seconds, or a formatted string containing a time.
+
+    ♫> seek_to 0
+    ♫> seek_to "5:00"
+
 ### list
 
 `list` with no arguments lists all the songs in your music library. If you pass it a playlist, it will list all the songs in that playlist.
